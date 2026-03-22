@@ -114,6 +114,7 @@ The following four KPI families drove every analytical decision in this project:
 ### Star Schema (dimensional model)
 
 [Star Schema Diagram](/https://github.com/user-attachments/files/26169205/ASCII.Star.Schema.Diagram.pdf)
+[Data Structure](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/ac6a23449743a5401e3340bfb84d17876a2ca9ed/Data%20Structure.pdf)
 
 
 ### Dataset Characteristics
