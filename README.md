@@ -64,7 +64,8 @@ The following four KPI families drove every analytical decision in this project:
 
 ---
 
-## 4. Insights and recommendations are provided on the following key areas:
+## 4. Dashboard Suite
+Insights and recommendations are provided on the following key areas:
 
 ### 📊 Executive Summary
 **Audience:** Hospital leadership & board
