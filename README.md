@@ -111,9 +111,7 @@ The following four KPI families drove every analytical decision in this project:
 | `master_encounter.csv` | 27,891 | One row per patient encounter (admission) |
 | `master_procedure.csv` | 47,701 | One row per procedure performed during an encounter |
 
-### Star Schema (dimensional model)
-
-[Star Schema Diagram](/https://github.com/user-attachments/files/26169205/ASCII.Star.Schema.Diagram.pdf)
+### Star Schema (dimensional model)      
 [Data Structure](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/ac6a23449743a5401e3340bfb84d17876a2ca9ed/Data%20Structure.pdf)
 
 
