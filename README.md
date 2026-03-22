@@ -186,71 +186,6 @@ Key analytical outputs:
 <html lang="en">
 
 ### Executive Summary Tab
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  🏥 MGH Hospital Performance Dashboard  │  2011–2022            │
-├─────────────────────────────────────────────────────────────────┤
-│  [ Year ▼ ]  [ Visit Type ▼ ]          All Years • All Types    │
-├──────────┬──────────┬──────────┬──────────┬──────────┬──────────┤
-│ ADMISSIONS│READMISS. │  AVG LOS │ AVG COST │ INS. COV.│ TOP AGE  │
-│  27,671  │  17,346  │  0.30 d  │  $3,640  │  30.6%   │  65+Sen  │
-├────────────────────────┬────────────────────────────────────────┤
-│  Insights (4 cards)    │ Peak Volume · RR vs Avg · Payer · Age  │
-├────────────────────────┼────────────────────────────────────────┤
-│  Adm & Readm Over Time │  Avg LOS by Year                       │
-├────────────────────────┼────────────────────────────────────────┤
-│  Payer Mix (donut)     │  Demographics — Age & Gender           │
-└────────────────────────┴────────────────────────────────────────┘
-```
-
-### Operations Tab
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  [ Year ▼ ]  [ Visit Type ▼ ]                                   │
-├──────────┬──────────┬──────────┬──────────┬────────────────────┤
-│  AVG LOS │ MEDIAN   │   RR     │BED OCC.  │  PROC / VISIT      │
-│   0.30d  │  0.01d   │ 62.2%    │   N/A    │     1.71           │
-├──────────────────────────────────────────────────────────────────┤
-│  Insights: High-RR Class · LOS Range · YoY Change · LOS Gap     │
-├────────────────────────┬─────────────────────────────────────────┤
-│  LOS by Visit Type     │  Readmission Rate Over Time             │
-├────────────────────────┼─────────────────────────────────────────┤
-│  Admissions Trend      │  Patient Journey — Type Distribution    │
-└────────────────────────┴─────────────────────────────────────────┘
-```
-
-### Finance Tab
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  [ Year ▼ ]  [ Payer ▼ ]                                        │
-├──────────┬──────────┬──────────┬──────────┬────────────────────┤
-│AVG COST  │  TOTAL   │  PAYER   │ TOP PROC │  HIGH-COST         │
-│ $3,640   │ $101.5M  │  COV 30% │  CATEG.  │  PATIENTS: 90      │
-├──────────────────────────────────────────────────────────────────┤
-│  Insights: Peak Rev · Coverage Gap · Top Proc Cat · Best Payer  │
-├────────────────────────┬─────────────────────────────────────────┤
-│  Avg Cost/Visit by Yr  │  Procedure Category Cost (donut)        │
-├────────────────────────┼─────────────────────────────────────────┤
-│  Revenue vs Coverage   │  Cost & Coverage by Payer               │
-└────────────────────────┴─────────────────────────────────────────┘
-```
-
-### Insurance Tab
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  [ Year ▼ ]  [ Payer ▼ ]  [ Coverage ▼ ]                       │
-├──────────┬──────────┬──────────┬──────────┬────────────────────┤
-│  COV.    │ COVERED  │ UNINSR.  │  LARGEST │  INSURED           │
-│  RATE    │  PROC    │ COST     │  PAYER   │  ENCOUNTERS        │
-│  30.6%   │  32,599  │  $50.2M  │ Medicare │   19,084           │
-├──────────────────────────────────────────────────────────────────┤
-│  Insights: Cov Trend · Medicare · Uninsured Burden · Proc Split │
-├────────────────────────┬─────────────────────────────────────────┤
-│  Payer Mix (donut)     │  Covered vs Uncovered Proc by Year      │
-├────────────────────────┼─────────────────────────────────────────┤
-│  Coverage Rate Trend   │  Payer: Billed vs Coverage Amount       │
-└────────────────────────┴─────────────────────────────────────────┘
-```
 
 > 📁 Replace the ASCII wireframes above with actual Figma PNG exports once available:
 > ```markdown
@@ -268,6 +203,10 @@ Key analytical outputs:
 - **Hospital admissions grew 191% from 2011 to 2014** (1,336 → 3,885 encounters), the peak year, before stabilizing around 2,000–3,000 annually.
 - Ambulatory encounters dominate the visit mix, while **inpatient accounts for only ~4% of volume but the longest LOS** (avg 1.54 days vs 0.06 days for emergency).
 - The **65+ Senior age group** represents the majority of all encounters, consistent with MGH's role as a tertiary referral centre serving an older patient population.
+- **Resources:**
+- [🌐 Open Interactive Dashboard](./mgh_dashboard.html)
+- [📐 View Dashboard Specification](./MGH_Dashboard_Reference_Guide.md)
+
 
 ### ⚙️ Operations
 - **The 30-day readmission rate peaked at 68.4% in 2014** — the same year admissions peaked — suggesting capacity pressure may have contributed to premature discharges.
