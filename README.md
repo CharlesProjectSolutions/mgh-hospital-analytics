@@ -114,7 +114,8 @@ The following four KPI families drove every analytical decision in this project:
 ### Star Schema (dimensional model)
 
 ```
-![Data Structure]("C:\Users\Charles\OneDrive\Desktop\ASCII Star Schema Diagram.pdf")
+
+[ASCII Star Schema Diagram.pdf](https://github.com/user-attachments/files/26169205/ASCII.Star.Schema.Diagram.pdf)
 
 
 
