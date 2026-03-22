@@ -64,7 +64,9 @@ The following four KPI families drove every analytical decision in this project:
 
 ---
 
-## 4. [Interactive HTML Wireframe & Prototype dashboard](`file:///C:/Users/Charles/OneDrive/Desktop/Maven%20Hospital%20Challenge/mgh_dashboard.html`)
+## 4. [Interactive HTML Wireframe & Prototype dashboard] 
+[mgh_WireframesDdashboard.html](https://github.com/user-attachments/files/26169119/mgh_WireframesDdashboard.html)<!DOCTYPE html>
+<html lang="en">
 
 Insights and recommendations are provided on the following key areas:
 
