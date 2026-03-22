@@ -113,46 +113,8 @@ The following four KPI families drove every analytical decision in this project:
 
 ### Star Schema (dimensional model)
 
-```
-
 [ASCII Star Schema Diagram.pdf](https://github.com/user-attachments/files/26169205/ASCII.Star.Schema.Diagram.pdf)
 
-
-
-
-
-                    ┌─────────────────┐
-                    │   fact_encounters│
-                    │─────────────────│
-          ┌─────────┤ encounter_id (PK)├──────────┐
-          │         │ patient_id (FK)  │           │
-          │         │ payer_id (FK)    │           │
-          │         │ class_id (FK)    │           │
-          │         │ date_id (FK)     │           │
-          │         │ total_claim_cost │           │
-          │         │ coverage_amount  │           │
-          │         │ los_days         │           │
-          │         └────────┬────────┘           │
-          │                  │                     │
-   ┌──────┴───────┐  ┌───────┴──────┐  ┌──────────┴──────┐
-   │ dim_patients │  │  dim_payers  │  │ dim_encounter_   │
-   │──────────────│  │──────────────│  │ class            │
-   │ patient_id   │  │ payer_id     │  │──────────────────│
-   │ age_group    │  │ payer_name   │  │ class_id         │
-   │ gender       │  │ payer_type   │  │ encounter_class  │
-   │ race         │  └──────────────┘  └──────────────────┘
-   └──────────────┘
-          │                  │
-   ┌──────┴───────┐  ┌───────┴──────────┐
-   │   dim_date   │  │ fact_procedures  │
-   │──────────────│  │──────────────────│
-   │ date_id      │  │ procedure_id (PK)│
-   │ year         │  │ encounter_id (FK)│
-   │ month        │  │ procedure_desc   │
-   │ quarter      │  │ procedure_cost   │
-   └──────────────┘  │ payer_coverage   │
-                     └──────────────────┘
-```
 
 ### Dataset Characteristics
 
