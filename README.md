@@ -31,7 +31,7 @@ The deliverables were designed to serve multiple stakeholders: clinical operatio
 
 ## 2. Project Objective
 
-> **Design and build a multi-page hospital performance dashboard that enables leadership to monitor clinical, operational, financial, and insurance KPIs — with the ability to drill down by year, visit type, payer, and coverage status.**
+> **Design and build a multi-page hospital performance dashboard that enables leadership to monitor clinical, operational, financial, and insurance KPIs, with the ability to drill down by year, visit type, payer, and coverage status.**
 
 Specifically, the project aimed to:
 
@@ -64,59 +64,40 @@ The following four KPI families drove every analytical decision in this project:
 
 ---
 
-## 4. Dashboard Suite
+## 4. An interactive HTML Wireframe & Prototype 
+dashboard**(`file:///C:/Users/Charles/OneDrive/Desktop/Maven%20Hospital%20Challenge/mgh_dashboard.html`) that loads instantly in the browser, no server required.
 
-The finished product is a **4-tab interactive HTML dashboard** (`mgh_dashboard.html`) that loads instantly in any modern browser — no server required.
+Insights and recommendations are provided on the following key areas:
 
-### Tab 1 — 📊 Executive Summary
+### 📊 Executive Summary
 **Audience:** Hospital leadership & board
 **Purpose:** High-level snapshot of the full patient population across all years and visit types.
 **Filters:** Year · Visit Type
 **KPI Tiles:** Total Admissions · Total Readmissions · Avg LOS · Avg Cost/Visit · Insurance Coverage Rate · Top Age Group
-**Charts:**
-- Admissions & Readmissions Over Time (line, dual-series)
-- Avg Length of Stay by Year (bar)
-- Payer Mix — Share of Encounters (doughnut)
-- Patient Demographics — Age & Gender (stacked bar)
 
 ---
 
-### Tab 2 — ⚙️ Operations
+### ⚙️ Operations
 **Audience:** Clinical operations & nurse management
 **Purpose:** Drill into throughput efficiency, readmission rates, and visit-type mix.
 **Filters:** Year · Visit Type
 **KPI Tiles:** Avg LOS · Median LOS · Readmission Rate · Procedures per Visit
-**Charts:**
-- Avg LOS by Visit Type (horizontal bar)
-- Readmission Rate Over Time (line)
-- Admissions Trend — by Type (stacked bar)
-- Patient Journey — Visit Type Distribution (doughnut)
 
 ---
 
-### Tab 3 — 💵 Finance
+### 💵 Finance
 **Audience:** CFO, revenue cycle management
 **Purpose:** Track cost per visit, total revenue, procedure costs, and payer-level reimbursement.
 **Filters:** Year · Payer
 **KPI Tiles:** Avg Cost/Visit · Total Revenue · Payer Coverage % · Top Procedure Category · High-Cost Patients
-**Charts:**
-- Avg Cost per Visit by Year (bar)
-- Procedure Category Cost Breakdown (doughnut)
-- Total Revenue vs Payer Coverage Over Time (dual-line)
-- Cost & Coverage by Payer (grouped bar)
 
 ---
 
-### Tab 4 — 🛡️ Insurance
+### 🛡️ Insurance
 **Audience:** Payer relations, access & equity team
 **Purpose:** Analyse insurance coverage rates, payer mix, and the financial burden on uninsured patients.
 **Filters:** Year · Payer · Coverage Status
 **KPI Tiles:** Coverage Rate · Covered Procedures · Uninsured Procedure Cost · Largest Payer · Insured Encounters
-**Charts:**
-- Payer Mix — Share of Encounters (doughnut)
-- Procedures: Covered vs Not Covered by Year (stacked bar)
-- Insurance Coverage Rate Over Time (line)
-- Payer: Billed vs Coverage Amount (grouped bar)
 
 ---
 
@@ -177,17 +158,15 @@ The finished product is a **4-tab interactive HTML dashboard** (`mgh_dashboard.h
 | **Unique Patients** | 974 |
 | **Total Encounters** | 27,891 |
 | **Total Procedures** | 47,701 |
-| **Encounter Classes** | 6: ambulatory, emergency, inpatient, outpatient, urgentcare, wellness |
+| **Encounter Classes** | 6 : ambulatory, emergency, inpatient, outpatient, urgentcare, wellness |
 | **Payers** | 10: Medicare, NO_INSURANCE, Medicaid, Humana, Aetna, Blue Cross Blue Shield, Dual Eligible, UnitedHealthcare, Cigna Health, Anthem |
-| **Procedure Categories** | 8: Other, Cardiac, Preventive, Cancer Tx, Imaging, Dialysis, Inj/Infusion, Surgery |
-| **Age Groups** | 5 bands (0-17, 18-34, 35-49, 50-64, 65+) |
-| **Data Type** | Fully synthetic (Maven Analytics) |
+| **Procedure Categories** | 8 : Other, Cardiac, Preventive, Cancer Tx, Imaging, Dialysis, Inj/Infusion, Surgery |
 
 ---
 
 ## 6. Methodology
 
-This project followed the **Google Data Analytics Ask → Prepare → Process → Analyze → Visualize** framework.
+This project followed the **5 Data Analytics Ask → Prepare → Process → Analyze → Visualize** framework.
 
 ---
 
