@@ -16,7 +16,6 @@
 8. [Insights Summary](#8-insights-summary)
 9. [How to Navigate the Repo](#9-how-to-navigate-the-repo)
 10. [Future Enhancements](#10-future-enhancements)
-11. Data Structure.pdf
 
 ---
 
