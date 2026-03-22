@@ -64,11 +64,7 @@ The following four KPI families drove every analytical decision in this project:
 
 ---
 
-## 4. [Interactive HTML Wireframe & Prototype dashboard] 
-[mgh_WireframesDdashboard.html](https://github.com/user-attachments/files/26169119/mgh_WireframesDdashboard.html)<!DOCTYPE html>
-<html lang="en">
-
-Insights and recommendations are provided on the following key areas:
+## 4. Insights and recommendations are provided on the following key areas:
 
 ### 📊 Executive Summary
 **Audience:** Hospital leadership & board
@@ -118,6 +114,12 @@ Insights and recommendations are provided on the following key areas:
 ### Star Schema (dimensional model)
 
 ```
+![Data Structure]("C:\Users\Charles\OneDrive\Desktop\ASCII Star Schema Diagram.pdf")
+
+
+
+
+
                     ┌─────────────────┐
                     │   fact_encounters│
                     │─────────────────│
@@ -217,7 +219,8 @@ Key analytical outputs:
 
 ## 7. Wireframes & Prototypes
 
-> **Note:** Figma wireframe exports should be placed in a `/wireframes` folder at the repo root. Reference them below by replacing the placeholder paths.
+> [mgh_WireframesDdashboard.html](https://github.com/user-attachments/files/26169119/mgh_WireframesDdashboard.html)<!DOCTYPE html>
+<html lang="en">
 
 ### Executive Summary Tab
 ```
