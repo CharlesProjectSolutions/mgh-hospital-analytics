@@ -10,7 +10,7 @@
 2. [Project Objective](#2-project-objective)
 3. [Business Questions & Core KPIs](#3-business-questions--core-kpis)
 4. [Dashboard Suite](#4-dashboard-suite)
-5. [Data Summary](#5-data-summary)
+5. [Data Structure](#5-data-summary)
 6. [Methodology](#6-methodology)
 7. [Wireframes & Prototypes](#7-wireframes--prototypes)
 8. [Insights Summary](#8-insights-summary)
@@ -102,7 +102,7 @@ The following four KPI families drove every analytical decision in this project:
 
 ---
 
-## 5. Data Summary
+##5. [Data Structure](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/ac6a23449743a5401e3340bfb84d17876a2ca9ed/Data%20Structure.pdf)
 
 ### Source Files
 
@@ -112,7 +112,7 @@ The following four KPI families drove every analytical decision in this project:
 | `master_procedure.csv` | 47,701 | One row per procedure performed during an encounter |
 
 ### Star Schema (dimensional model)      
-[Data Structure](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/ac6a23449743a5401e3340bfb84d17876a2ca9ed/Data%20Structure.pdf)
+
 
 
 ### Dataset Characteristics
