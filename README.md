@@ -23,7 +23,7 @@
 
 This project was completed as part of the **Maven Analytics Hospital Challenge**, where I acted as a **Healthcare Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
-The challenge required me to move through the full analytics lifecycle — from raw CSV ingestion and dimensional modelling, through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
+The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling, through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
 
 The deliverables were designed to serve multiple stakeholders: clinical operations teams interested in patient flow and readmissions, finance leaders tracking costs and revenue, and payer-relations teams monitoring insurance coverage and reimbursement trends.
 
@@ -58,15 +58,6 @@ The executive team wants clarity on the followings questions: [Open Dashboard](.
 
 ### 4. **Insurance Coverage**
 * How many **procedures** are covered by insurance?
-
-These KPIs help leadership understand capacity, financial performance, and care quality
-
-| # | KPI Family | Core Metric | 11-Year Overall |
-|---|-----------|-------------|-----------------|
-| 1 | **Volume & Admissions** | Total Encounters | **27,891** |
-| 2 | **Readmissions** | 30-Day Readmission Rate | **62.2%** (17,346 events) |
-| 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
-| 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
 
 ---
 
@@ -105,7 +96,14 @@ Insights and recommendations are provided on the following key areas:
 
 ---
 
-> **Dynamic Insights Panels:** Every tab includes a row of **4 auto-generated insight cards** that update in real time when filters change — surfacing observations such as peak volume years, readmission rate deviations from the 11-year average, dominant payer share, and uninsured cost burden estimates.
+These KPIs help leadership understand capacity, financial performance, and care quality
+
+| # | KPI Family | Core Metric | 11-Year Overall |
+|---|-----------|-------------|-----------------|
+| 1 | **Volume & Admissions** | Total Encounters | **27,891** |
+| 2 | **Readmissions** | 30-Day Readmission Rate | **62.2%** (17,346 events) |
+| 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
+| 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
 
 ---
 
