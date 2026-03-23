@@ -31,7 +31,7 @@ The deliverables were designed to serve multiple stakeholders: clinical operatio
 
 ## 2. Project Objective
 
-> **Design and build a hospital performance dashboard that enables leadership to monitor clinical, operational, financial, and insurance KPIs, with the ability to drill down by year, visit type, payer, and coverage status.**
+> **Design and build a hospital performance KPI dashboard that enables leadership to monitor clinical, insurance, financial, and  operational metrics, with the ability to drill down by year, visit type, payer, and coverage status.**
 
 Specifically, the project aimed to:
 
@@ -68,6 +68,10 @@ Targeted SQL queries regarding the various business questions can be found [here
 The SQL data ingestion queries utilized to create tables + bulk load CSVs files and perform quality checks can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_ingestion.sql)
 
 The SQL queries utilized to build data Model Views feeding Tableau dashboards can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_model_views)
+
+Prior to beginning this analysis, a variety of checks were conducted for quality control and familiarization with the datasets. Source CSVs files were reviewed for structure, column types, completeness, and 
+identified the need for a star schema to support multi-dimensional cross-filtering. Designed dimensional tables: dim_patients, dim_payers, dim_encounter_class, dim_date.
+Designed fact tables: fact_encounters, fact_procedures, and mapped derived fields required for KPIs: is_readmission flag (30-day window), los_days, age_group, coverage_rate.
 
 <img width="33000" height="2500" alt="converted_page_1" src="https://github.com/user-attachments/assets/db941141-c479-4587-948d-01e7cc7581d9" />
 
@@ -136,33 +140,6 @@ These KPIs help leadership understand capacity, financial performance, and care 
 
 ---
 
-## 6. Methodology
-
-This project followed the **5 Data Analytics Ask → Prepare → Process → Analyze → Visualize** framework.
-
----
-
-### Ask
-Defined the four KPI domains (admissions, operations, finance, insurance) in collaboration with the project brief. Mapped each stakeholder group to a dedicated dashboard tab to ensure relevance at every level of the organisation. Documented 12 specific business questions to be answered before any data was touched.
-
----
-
-### Prepare
-- Reviewed both source CSVs (`master_encounter.csv`, `master_procedure.csv`) for structure, column types, and completeness
-- Identified the need for a **star schema** to support multi-dimensional cross-filtering
-- Designed dimensional tables: `dim_patients`, `dim_payers`, `dim_encounter_class`, `dim_date`
-- Designed fact tables: `fact_encounters`, `fact_procedures`
-- Mapped derived fields required for KPIs: `is_readmission` flag (30-day window), `los_days`, `age_group`, `coverage_rate`
-
----
-
-### Process
-- **SQL (`mgh_queries.sql`):** Wrote T-SQL (Microsoft SQL Server syntax) DDL scripts to create the star schema and all ETL transformations. Included window functions (`LAG`) for readmission detection, `DATEDIFF` for LOS, and CTEs for payer-coverage aggregation.
-- **Python (`mgh_analytics.py` + `compute_data.py`):** Used `pandas` to replicate all SQL KPIs in Python — enabling local reproducibility without a SQL Server instance. `compute_data.py` pre-computes **19 cross-dimensional data slices** (year × visit type × payer matrix) and serialises to `dashboard_data.json`, which is then embedded directly into the HTML dashboard.
-- Handled column-collision edge cases during the procedure/encounter merge (`payer_name_x` / `payer_name_y` suffix resolution).
-
----
-
 ### Analyze
 Key analytical outputs:
 
@@ -179,30 +156,6 @@ Key analytical outputs:
 
 ---
 
-### Visualize
-- **Tableau Migration Reference (`MGH_Dashboard_Reference_Guide.md`):** Complete specification of all Calculated Fields, LOD Expressions (`{FIXED}`, `{INCLUDE}`, `{EXCLUDE}`), Table Calculations, Parameters, Dashboard Actions, and filter logic for a direct Tableau rebuild.
-- **HTML Dashboard (`mgh_dashboard.html`):** Four-tab Chart.js 4.4 dashboard with fully functional cross-filters. Pre-computed JSON data is embedded as a JavaScript constant — zero dependencies, zero server, opens directly in a browser.
-- **Dynamic Insight Cards:** Each tab surfaces 4 auto-generated observations (e.g., *"2014 had the highest volume with 3,885 encounters"*; *"Coverage has declined by 11.6pp from 47.4% in 2011 to 35.8% in 2021"*) that recalculate on every filter change.
-
----
-
-## 7. Wireframes & Prototypes
-
-> [mgh_WireframesDdashboard.html](https://github.com/user-attachments/files/26169119/mgh_WireframesDdashboard.html)<!DOCTYPE html>
-<html lang="en">
-
-### Executive Summary Tab
-
-> 📁 Replace the ASCII wireframes above with actual Figma PNG exports once available:
-> ```markdown
-> ![Executive Summary Wireframe](wireframes/exec_summary_wireframe.png)
-> ![Operations Wireframe](wireframes/operations_wireframe.png)
-> ![Finance Wireframe](wireframes/finance_wireframe.png)
-> ![Insurance Wireframe](wireframes/insurance_wireframe.png)
-> ```
-
----
-
 ## 8. Insights Summary
 
 ### 📊 Volume & Admissions
@@ -210,8 +163,7 @@ Key analytical outputs:
 - Ambulatory encounters dominate the visit mix, while **inpatient accounts for only ~4% of volume but the longest LOS** (avg 1.54 days vs 0.06 days for emergency).
 - The **65+ Senior age group** represents the majority of all encounters, consistent with MGH's role as a tertiary referral centre serving an older patient population.
 - **Resources:**
-- [🌐 Open Interactive Dashboard](./mgh_dashboard.html)
-- [📐 View Dashboard Specification](./MGH_Dashboard_Reference_Guide.md)
+
 
 
 ### ⚙️ Operations
@@ -235,59 +187,6 @@ Key analytical outputs:
 
 ---
 
-## 9. How to Navigate the Repo
-
-```
-Maven Hospital Challenge/
-│
-├── README.md                         ← You are here
-│
-├── mgh_dashboard.html                ← 🌐 LIVE DASHBOARD — open in any browser
-├── mgh_queries.sql                   ← 🗄️ T-SQL / MS SQL Server queries (all KPIs)
-├── mgh_analytics.py                  ← 🐍 Python analytics script (pandas, all KPIs)
-├── MGH_Dashboard_Reference_Guide.md  ← 📐 Tableau migration reference (full spec)
-│
-└── Hospital Data/
-    │
-    ├── master_encounter.csv          ← Source: 27,891 encounter rows
-    ├── master_procedure.csv          ← Source: 47,701 procedure rows
-    │
-    ├── dim_patients.csv              ← Dimension: patient demographics
-    ├── dim_payers.csv                ← Dimension: insurance payers
-    ├── dim_encounter_class.csv       ← Dimension: visit type codes
-    ├── dim_date.csv                  ← Dimension: calendar table
-    ├── fact_encounters.csv           ← Fact: one row per encounter
-    ├── fact_procedures.csv           ← Fact: one row per procedure
-    │
-    ├── create_schema.sql             ← DDL to create star schema tables in SQL Server
-    ├── master_join.sql               ← SQL joins to rebuild master tables from star schema
-    ├── compute_data.py               ← Python: pre-computes all dashboard data slices
-    ├── dashboard_data.json           ← JSON: 19 pre-computed KPI data keys (embedded in HTML)
-    └── build_dashboard_v2.py         ← Python: generates mgh_dashboard.html from JSON
-```
-
-### Quick Start
-
-**To view the dashboard (no installation needed):**
-```
-Open mgh_dashboard.html in Chrome, Edge, or Firefox
-```
-
-**To regenerate the dashboard after data changes:**
-```bash
-cd "Hospital Data"
-py compute_data.py        # Step 1: recompute dashboard_data.json
-py build_dashboard_v2.py  # Step 2: rebuild mgh_dashboard.html
-```
-
-**To run the Python analytics script:**
-```bash
-py mgh_analytics.py
-```
-
-**To run SQL queries:** Open `mgh_queries.sql` in SSMS (SQL Server Management Studio) after running `create_schema.sql` to set up the schema.
-
----
 
 ## 10. Future Enhancements
 
@@ -299,11 +198,10 @@ The current dashboard is a strong analytical foundation. The following enhanceme
 | 🔴 High | **Live SQL Server / Azure SQL Connection** — Replace static JSON with a live ODBC/JDBC connection, enabling real-time data refresh | Eliminates manual `compute_data.py` reruns |
 | 🟡 Medium | **Bed Occupancy & Capacity KPI** — Integrate hospital capacity data to calculate true bed utilisation rates and flag surge risk | Fills the current "N/A" gap in the Operations tab |
 | 🟡 Medium | **Cost Forecasting Module** — Time-series forecasting (Prophet or ARIMA) to project revenue and cost trajectories 12–24 months forward | Supports annual budget planning |
-| 🟡 Medium | **Full Tableau Cloud Deployment** — Migrate the HTML dashboard to Tableau Cloud using the `MGH_Dashboard_Reference_Guide.md` specification, enabling enterprise sharing and row-level security | Stakeholder self-service access |
-| 🟢 Low | **Geospatial Patient Origin Map** — If patient ZIP codes are available, a Mapbox choropleth of encounter density by catchment area | Identifies underserved communities and expansion opportunities |
+| 🟡 Medium | **Full Tableau Cloud Deployment** — Migrate the HTML dashboard to Tableau Cloud, enabling enterprise sharing and row-level security | Stakeholder self-service access |
 | 🟢 Low | **Equity & Disparities Dashboard** — A dedicated 5th tab breaking down KPIs by race/ethnicity and gender to surface health equity gaps | Supports DEI reporting and compliance |
 | 🟢 Low | **Automated PDF/Email Reports** — Scheduled Python script that renders key KPI snapshots to PDF and emails to leadership monthly | Reduces manual reporting overhead |
-| 🟢 Low | **Mobile-Responsive Redesign** — Refactor CSS grid layouts and chart sizes for tablets and phones using media queries | Extends access to clinical staff on mobile devices |
+
 
 ---
 
