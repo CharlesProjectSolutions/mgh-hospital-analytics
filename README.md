@@ -63,16 +63,7 @@ The executive team wants clarity on the followings questions: [Open Dashboard](.
 
 ## 4. Data Structure
 
-### Source Files
-
-| File | Rows | Description |
-|------|------|-------------|
-| `master_encounter.csv` | 27,891 | One row per patient encounter (admission) |
-| `master_procedure.csv` | 47,701 | One row per procedure performed during an encounter |
-
-### Star Schema (dimensional model)      
-
-
+<img width="33000" height="2500" alt="converted_page_1" src="https://github.com/user-attachments/assets/db941141-c479-4587-948d-01e7cc7581d9" />
 
 ### Dataset Characteristics
 
