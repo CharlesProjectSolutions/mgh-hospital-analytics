@@ -39,10 +39,13 @@ The deliverables were designed to serve multiple stakeholders: clinical operatio
 
 Specifically, the project aimed to:
 
+- **Provide** leadership with real‑time visibility into key hospital performance metrics.
+- **Identify** trends in admissions, readmissions, and patient flow.
+- **Highlight** financial cost drivers and revenue patterns.
+- **Understand** insurance coverage gaps and payer mix distribution.
+- **Enable** data‑driven decision‑making across departments.
 - **Centralize** disparate encounter and procedure data into a clean star schema
 - **Quantify** the four core pillars of hospital performance: admissions, operations, finance, and insurance
-- **Surface** actionable insights through automated, filter-responsive dashboard
-- **Deliver** production-ready artefacts in four formats: T-SQL queries, a Python analytics script, HTML wireframe/prototype dashboard, and a live Tableau dashboard.
 
 ---
 
@@ -95,7 +98,15 @@ Designed fact tables: fact_encounters, fact_procedures, and mapped derived field
 
 ## 5. Dashboard Suite
 
-Insights and recommendations are provided on the following key areas, and a downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
+Insights and recommendations are provided on the following stakeholders, and a downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
+
+| Role | Responsibilities | Needs |
+|------|------------------|-------|
+| CEO | Strategic oversight | High‑level KPIs, trends, risks |
+| COO | Operational efficiency | LOS, throughput, readmissions |
+| CFO | Financial performance | Cost drivers, payer mix, uninsured exposure |
+| Department Heads | Tactical decisions | Department‑level metrics |
+| Analytics Team | Dashboard maintenance | Scalable, well‑documented solution |
 
 ### 📊 Executive Summary
 **Audience:** Hospital leadership & board
