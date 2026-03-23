@@ -78,7 +78,7 @@ The SQL queries utilized to build data Model Views feeding Tableau dashboards ca
 
 Prior to beginning this analysis, a variety of checks were conducted for quality control and familiarization with the datasets. Source CSVs files were reviewed for structure, column types, completeness, and 
 identified the need for a star schema to support multi-dimensional cross-filtering. Designed dimensional tables: dim_patients, dim_payers, dim_encounter_class, dim_date.
-Designed fact tables: fact_encounters, fact_procedures, and mapped derived fields required for KPIs: is_readmission flag (30-day window), los_days, age_group, coverage_rate.
+Designed fact tables: fact_encounters, fact_procedures, and then mapped derived fields required for KPIs such as: is_readmission flag (30-day window), los_days, age_group, coverage_rate.
 
 <img width="33000" height="2500" alt="converted_page_1" src="https://github.com/user-attachments/assets/db941141-c479-4587-948d-01e7cc7581d9" />
 
@@ -98,7 +98,7 @@ Designed fact tables: fact_encounters, fact_procedures, and mapped derived field
 
 ## 5. Dashboard Suite
 
-Insights and recommendations are provided on the following stakeholders, and a downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
+Insights and recommendations are provided to the following stakeholders, and a downloadable interactive wireframe and prototype are included [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
 
 | Role | Responsibilities | Needs |
 |------|------------------|-------|
@@ -108,34 +108,9 @@ Insights and recommendations are provided on the following stakeholders, and a d
 | Department Heads | Tactical decisions | Department‑level metrics |
 | Analytics Team | Dashboard maintenance | Scalable, well‑documented solution |
 
-### 📊 Executive Summary
-**Audience:** Hospital leadership & board
-**Purpose:** High-level snapshot of the full patient population across all years and visit types.
-**KPI Tiles:** Total Admissions · Total Readmissions · Avg LOS · Avg Cost/Visit · Insurance Coverage Rate · Top Age Group
-
 ---
 
-### ⚙️ Operations
-**Audience:** Clinical operations & nurse management
-**Purpose:** Drill into throughput efficiency, readmission rates, and visit-type mix.
-**KPI Tiles:** Avg LOS · Median LOS · Readmission Rate · Procedures per Visit
-
----
-
-### 💵 Finance
-**Audience:** CFO, revenue cycle management
-**Purpose:** Track cost per visit, total revenue, procedure costs, and payer-level reimbursement.
-**KPI Tiles:** Avg Cost/Visit · Total Revenue · Payer Coverage % · Top Procedure Category · High-Cost Patients
-
----
-
-### 🛡️ Insurance
-**Audience:** Payer relations, access & equity team
-**Purpose:** Analyse insurance coverage rates, payer mix, and the financial burden on uninsured patients.
-**KPI Tiles:** Coverage Rate · Covered Procedures · Uninsured Procedure Cost · Largest Payer · Insured Encounters
-
----
-
+## 6. Insights Summary
 
 These KPIs help leadership understand capacity, financial performance, and care quality
 
@@ -151,18 +126,16 @@ Key analytical outputs:
 
 | Analysis | Finding |
 |----------|---------|
-| Readmission trend | Rate rose from 48.8% (2011) to a peak of 68.4% (2014), then fluctuated — suggesting systemic discharge quality issues after 2013 |
+| Readmission trend | Rate rose from 48.8% (2011) to a peak of 68.4% (2014), then fluctuated suggesting systemic discharge quality issues after 2013 |
 | LOS by class | Inpatient avg LOS (1.54 d) is **25×** longer than emergency (0.06 d), validating separate benchmarking by encounter class |
 | Payer coverage gap | Average payer coverage of 30.6% leaves patients with **69.4% OOP burden** across the study period |
-| Coverage rate erosion | Coverage peaked at 47.4% in 2011 and fell to a low of 23.0% in 2018 — a 24.4pp decline over 7 years |
+| Coverage rate erosion | Coverage peaked at 47.4% in 2011 and fell to a low of 23.0% in 2018 suggesting a 24.4pp decline over 7 years |
 | Payer concentration | Medicare alone accounts for 40.8% of all encounters (11,371 visits), making government payer dynamics central to revenue strategy |
 | Uninsured burden | 8,807 encounters (31.6%) had NO_INSURANCE, representing an estimated **$32M+ in self-pay costs** |
 | Revenue peak | 2014 generated the highest annual revenue at **$12.0M**, corresponding to the peak admission year |
 | Cost volatility | Avg cost/visit peaked at **$4,301 in 2012** and has fluctuated since, driven largely by inpatient and emergency case mix |
 
 ---
-
-## 6. Insights Summary
 
 ### 📊 Volume & Admissions
 - **Hospital admissions grew 191% from 2011 to 2014** (1,336 → 3,885 encounters), the peak year, before stabilizing around 2,000–3,000 annually.
@@ -183,7 +156,7 @@ Key analytical outputs:
 - Medicare provides the best reimbursement ratio among insured payers, though its 40.8% share of encounters creates significant concentration risk around CMS policy changes.
 
 ### 🛡️ Insurance
-- **Coverage rates declined from a high of 47.4% in 2011 to a low of 23.0% in 2018** — a 24.4pp erosion that substantially increased patient financial burden during that period.
+- **Coverage rates declined from a high of 47.4% in 2011 to a low of 23.0% in 2018**, a 24.4pp erosion that substantially increased patient financial burden during that period.
 - **Medicare is the single dominant payer at 40.8% of all encounters** (11,371 visits), with Medicaid and NO_INSURANCE the next largest groups, indicating a predominantly government-insured or uninsured patient base.
 - **8,807 encounters (31.6%) were entirely uninsured**, representing an estimated $32M+ in self-pay cost exposure based on the average cost per visit — a significant uncompensated care risk.
 - Of 47,701 total procedures, **32,599 (68.3%) had payer coverage** and 15,102 (31.7%) were self-pay, consistent with the ~31.6% uninsured encounter share.
@@ -193,17 +166,17 @@ Key analytical outputs:
 
 ## 7. Future Enhancements
 
-The current dashboard is a strong analytical foundation. The following enhancements would move it toward a production-grade hospital intelligence platform:
+The current dashboard is a strong analytical foundation but the following enhancements would move it toward a production-grade hospital intelligence platform:
 
 | Priority | Enhancement | Value |
 |----------|------------|-------|
 | 🔴 High | **Predictive Readmission Model** — Logistic regression or XGBoost model to score individual patients' 30-day readmission risk at discharge | Actionable clinical intervention at the point of care |
-| 🔴 High | **Live SQL Server / Azure SQL Connection** — Replace static JSON with a live ODBC/JDBC connection, enabling real-time data refresh | Eliminates manual `compute_data.py` reruns |
-| 🟡 Medium | **Bed Occupancy & Capacity KPI** — Integrate hospital capacity data to calculate true bed utilisation rates and flag surge risk | Fills the current "N/A" gap in the Operations tab |
-| 🟡 Medium | **Cost Forecasting Module** — Time-series forecasting (Prophet or ARIMA) to project revenue and cost trajectories 12–24 months forward | Supports annual budget planning |
-| 🟡 Medium | **Full Tableau Cloud Deployment** — Migrate the HTML dashboard to Tableau Cloud, enabling enterprise sharing and row-level security | Stakeholder self-service access |
-| 🟢 Low | **Equity & Disparities Dashboard** — A dedicated 5th tab breaking down KPIs by race/ethnicity and gender to surface health equity gaps | Supports DEI reporting and compliance |
-| 🟢 Low | **Automated PDF/Email Reports** — Scheduled Python script that renders key KPI snapshots to PDF and emails to leadership monthly | Reduces manual reporting overhead |
+| 🔴 High | **Live SQL Server / Azure SQL Connection**: Replace static JSON with a live ODBC/JDBC connection, enabling real-time data refresh | Eliminates manual `compute_data.py` reruns |
+| 🟡 Medium | **Bed Occupancy & Capacity KPI**: Integrate hospital capacity data to calculate true bed utilisation rates and flag surge risk | Fills the current "N/A" gap in the Operations tab |
+| 🟡 Medium | **Cost Forecasting Module**: Time-series forecasting (Prophet or ARIMA) to project revenue and cost trajectories 12–24 months forward | Supports annual budget planning |
+| 🟡 Medium | **Full Tableau Cloud Deployment**: Migrate the HTML dashboard to Tableau Cloud, enabling enterprise sharing and row-level security | Stakeholder self-service access |
+| 🟢 Low | **Equity & Disparities Dashboard**: A dedicated 5th tab breaking down KPIs by race/ethnicity and gender to surface health equity gaps | Supports DEI reporting and compliance |
+| 🟢 Low | **Automated PDF/Email Reports**: Scheduled Python script that renders key KPI snapshots to PDF and emails to leadership monthly | Reduces manual reporting overhead |
 
 
 ---
@@ -217,14 +190,14 @@ The current dashboard is a strong analytical foundation. The following enhanceme
 | Python | pandas · json · pathlib |
 | Visualisation | Chart.js 4.4 (CDN) |
 | Dashboard | Vanilla HTML5 / CSS3 / ES6+ JavaScript |
-| BI Reference | Tableau Desktop (specification only) |
-| IDE | VS Code |
+| BI Reference | Tableau Desktop, Power BI |
+| IDE | Jupyter Notebook, VS Code |
 
 ---
 
 ## 📄 License
 
-This project uses **synthetic data** provided by [Maven Analytics](https://www.mavenanalytics.io/) for educational purposes. All analysis, code, and dashboards are original work and are shared for portfolio and learning purposes.
+This project uses **synthetic data** provided by [Maven Analytics](https://www.mavenanalytics.io/). All analysis, code, and dashboards are original work and are shared for portfolio and learning purposes.
 
 ---
 
@@ -232,6 +205,6 @@ This project uses **synthetic data** provided by [Maven Analytics](https://www.m
 
 **Massachusetts General Hospital · Synthetic Data 2011–2022 · Maven Analytics Hospital Challenge**
 
-*Built with SQL · Python · Chart.js · HTML/CSS/JS*
+*Built with SQL · Python · Chart.js · HTML/CSS/JS · Tableau*
 
 </div>
