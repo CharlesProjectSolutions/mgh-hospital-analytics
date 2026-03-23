@@ -7,7 +7,7 @@ This project delivers a four‑page dashboard system:
 2. Operations
 3. Finance
 4. Insurance
-> End-to-end analytics project covering SQL, Python, Tableau, and an interactive HTML Wireframe/Prototype dashboard for MGH (synthetic dataset, 2011–2022).
+> End-to-end analytics project covering SQL, Python, Tableau, and an interactive HTML Wireframe/Prototype dashboard.
 
 ---
 
