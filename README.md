@@ -9,8 +9,8 @@
 1. [Project Overview](#1-project-overview)
 2. [Project Objective](#2-project-objective)
 3. [Business Questions & Core KPIs](#3-business-questions--core-kpis)
-4. [Dashboard Suite](#4-dashboard-suite)
-5. [Data Structure](#5-data-structure) 
+4. [Data Structure](#4-data-structure)
+5. [Dashboard Suite](#5-dashboard-suite)
 6. [Methodology](#6-methodology)
 7. [Wireframes & Prototypes](#7-wireframes--prototypes)
 8. [Insights Summary](#8-insights-summary)
@@ -23,7 +23,7 @@
 
 This project was completed as part of the **Maven Analytics Hospital Challenge**, where I acted as a **Healthcare Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
-The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling, through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
+The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
 
 The deliverables were designed to serve multiple stakeholders: clinical operations teams interested in patient flow and readmissions, finance leaders tracking costs and revenue, and payer-relations teams monitoring insurance coverage and reimbursement trends.
 
@@ -61,7 +61,34 @@ The executive team wants clarity on the followings questions: [Open Dashboard](.
 
 ---
 
-## 4. Dashboard Suite
+## 4. Data Structure
+
+### Source Files
+
+| File | Rows | Description |
+|------|------|-------------|
+| `master_encounter.csv` | 27,891 | One row per patient encounter (admission) |
+| `master_procedure.csv` | 47,701 | One row per procedure performed during an encounter |
+
+### Star Schema (dimensional model)      
+
+
+
+### Dataset Characteristics
+
+| Attribute | Detail |
+|-----------|--------|
+| **Date Range** | January 2011 – February 2022 |
+| **Unique Patients** | 974 |
+| **Total Encounters** | 27,891 |
+| **Total Procedures** | 47,701 |
+| **Encounter Classes** | 6 : ambulatory, emergency, inpatient, outpatient, urgentcare, wellness |
+| **Payers** | 10: Medicare, NO_INSURANCE, Medicaid, Humana, Aetna, Blue Cross Blue Shield, Dual Eligible, UnitedHealthcare, Cigna Health, Anthem |
+| **Procedure Categories** | 8 : Other, Cardiac, Preventive, Cancer Tx, Imaging, Dialysis, Inj/Infusion, Surgery |
+
+---
+
+## 5. Dashboard Suite
 Insights and recommendations are provided on the following key areas:
 
 ### 📊 Executive Summary
@@ -105,33 +132,6 @@ These KPIs help leadership understand capacity, financial performance, and care 
 | 2 | **Readmissions** | 30-Day Readmission Rate | **62.2%** (17,346 events) |
 | 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
 | 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
-
----
-
-## 5. Data Structure
-
-### Source Files
-
-| File | Rows | Description |
-|------|------|-------------|
-| `master_encounter.csv` | 27,891 | One row per patient encounter (admission) |
-| `master_procedure.csv` | 47,701 | One row per procedure performed during an encounter |
-
-### Star Schema (dimensional model)      
-
-
-
-### Dataset Characteristics
-
-| Attribute | Detail |
-|-----------|--------|
-| **Date Range** | January 2011 – February 2022 |
-| **Unique Patients** | 974 |
-| **Total Encounters** | 27,891 |
-| **Total Procedures** | 47,701 |
-| **Encounter Classes** | 6 : ambulatory, emergency, inpatient, outpatient, urgentcare, wellness |
-| **Payers** | 10: Medicare, NO_INSURANCE, Medicaid, Humana, Aetna, Blue Cross Blue Shield, Dual Eligible, UnitedHealthcare, Cigna Health, Anthem |
-| **Procedure Categories** | 8 : Other, Cardiac, Preventive, Cancer Tx, Imaging, Dialysis, Inj/Infusion, Surgery |
 
 ---
 
