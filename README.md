@@ -23,7 +23,7 @@
 
 This project was completed as part of the **Maven Analytics Hospital Challenge**, where I acted as a **Healthcare Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
-The challenge required me to move through the full analytics lifecycle — from raw CSV ingestion and dimensional modelling, through SQL-driven KPI calculation, Python-based statistical analysis, Tableau dashboard specification, and finally a **fully interactive, cross-filtered HTML dashboard** built with Chart.js.
+The challenge required me to move through the full analytics lifecycle — from raw CSV ingestion and dimensional modelling, through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
 
 The deliverables were designed to serve multiple stakeholders: clinical operations teams interested in patient flow and readmissions, finance leaders tracking costs and revenue, and payer-relations teams monitoring insurance coverage and reimbursement trends.
 
@@ -31,14 +31,14 @@ The deliverables were designed to serve multiple stakeholders: clinical operatio
 
 ## 2. Project Objective
 
-> **Design and build a multi-page hospital performance dashboard that enables leadership to monitor clinical, operational, financial, and insurance KPIs, with the ability to drill down by year, visit type, payer, and coverage status.**
+> **Design and build a hospital performance dashboard that enables leadership to monitor clinical, operational, financial, and insurance KPIs, with the ability to drill down by year, visit type, payer, and coverage status.**
 
 Specifically, the project aimed to:
 
 - **Centralize** disparate encounter and procedure data into a clean star schema
 - **Quantify** the four core pillars of hospital performance: admissions, operations, finance, and insurance
-- **Surface** actionable insights through automated, filter-responsive commentary panels on every dashboard page
-- **Deliver** production-ready artefacts in four formats: T-SQL queries, a Python analytics script, a Tableau migration guide, and a live HTML dashboard
+- **Surface** actionable insights through automated, filter-responsive dashboard
+- **Deliver** production-ready artefacts in four formats: T-SQL queries, a Python analytics script, HTML wireframe/prototype dashboard, and a live Tableau dashboard.
 
 ---
 
@@ -53,14 +53,27 @@ The following four KPI families drove every analytical decision in this project:
 | 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
 | 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
 
-**Supporting questions answered by the dashboard:**
+**Key Business & Supporting Questions Answered by the Dashboard:**
 
-- How has admission volume trended year-over-year, and which year saw peak throughput?
-- Which encounter class carries the highest readmission burden?
-- Where does payer coverage leave patients with the greatest out-of-pocket exposure?
-- Which insurance payers deliver the best reimbursement rates relative to billed amounts?
-- How does patient age and gender distribution shift across years and visit types?
-- Which procedure category drives the highest share of total cost?
+## 🏥 
+
+The executive team wants clarity on:
+
+### 1. **Patient Volume Trends**
+* How many patients are being **admitted or readmitted** over time?
+* How has admission volume trended year-over-year, and which year saw peak throughput?
+
+### 2. **Hospital Stay Efficiency**
+* What is the **average length of stay** for patients?
+
+### 3. **Cost of Care**
+* What is the **average cost per visit**?
+
+### 4. **Insurance Coverage**
+* How many **procedures** are covered by insurance?
+
+---
+> These KPIs help leadership understand capacity, financial performance, and care quality.
 
 ---
 
