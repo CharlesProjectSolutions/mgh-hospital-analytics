@@ -59,7 +59,7 @@ The executive team wants clarity on the followings questions:
 ### 4. **Insurance Coverage**
 * How many **procedures** are covered by insurance?
 
-Targeted SQL queries regarding the various business questions can be found [here](./kpi_queries.sqll)
+Targeted SQL queries regarding the various business questions can be found [here](./https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/2f3398b68dee9dfa785e6be1036471e9ceaf205d/kpi_queries.sql)
 
 ---
 
