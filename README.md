@@ -44,7 +44,7 @@ Specifically, the project aimed to:
 
 ## 3. Business Questions & Core KPIs
 
-The executive team wants clarity on the followings questions: [Open Dashboard](./mgh_dashboard.html)
+The executive team wants clarity on the followings questions:
 
 ### 1. **Patient Volume Trends**
 * How many patients are being **admitted or readmitted** over time?
@@ -58,6 +58,8 @@ The executive team wants clarity on the followings questions: [Open Dashboard](.
 
 ### 4. **Insurance Coverage**
 * How many **procedures** are covered by insurance?
+
+Targeted SQL queries regarding the various business questions can be found [here](./kpi_queries.sqll)
 
 ---
 
