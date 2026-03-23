@@ -203,7 +203,6 @@ WITH (FORMAT='CSV');
    QUICK SANITY TABLES QUERY CHECKS
    ============================================================ */
 
-
 SELECT 'dim_patients', COUNT(*) AS row_cnt FROM dbo.dim_patients
 UNION ALL
 SELECT 'dim_payers',  COUNT(*) FROM dbo.dim_payers
@@ -219,73 +218,5 @@ GO
 
 
 
-
-
-
 SELECT * FROM dbo.fact_encounters
-
--- Query 1.1: Overall Hospital Performance Dashboard Metrics
--- Purpose: Calculate summary KPIs for executive dashboard
-SELECT
-    COUNT(DISTINCT encounter_id) AS total_encounters,
-    COUNT(DISTINCT patient_id) AS total_patients,
-    --ROUND(AVG(EXTRACT(EPOCH FROM (encounter_stop - encounter_start)) / 3600), 2) AS avg_los_hours,
-    ROUND(SUM(total_claim_cost), 2) AS total_revenue,
-    ROUND(AVG(total_claim_cost), 2) AS avg_cost_per_encounter,
-    ROUND(SUM(payer_coverage), 2) AS total_payer_coverage,
-    ROUND((SUM(payer_coverage) / NULLIF(SUM(total_claim_cost), 0)) * 100, 2) AS payer_coverage_rate
-FROM fact_encounters
-INNER JOIN dim_date ON fact_encounters.date_key = dim_date.date_key
-WHERE dim_date.date >= '2011-01-01';
-
-
-
--- Query 1.2: Encounter Volume Trends by Month
--- Purpose: Track monthly encounter volumes to identify seasonality and trends
-SELECT
-    DATEFROMPARTS(YEAR(encounter_start), MONTH(encounter_start), 1) AS month, 
-    COUNT(*) AS encounter_count,
-    COUNT(DISTINCT patient_id) AS unique_patients,
-    ROUND(AVG(total_claim_cost), 2) AS avg_encounter_cost
-FROM dbo.fact_encounters
---WHERE encounter_start >= DATEADD(YEAR, -2, DATEFROMPARTS(YEAR(GETDATE()), 1, 1))
-GROUP BY DATEFROMPARTS(YEAR(encounter_start), MONTH(encounter_start), 1)
-ORDER BY month DESC;
-
-
-
-
-WITH encounter_sequence AS (
-    SELECT
-        encounter_id, patient_id, encounter_class_id,
-        encounter_start,
-        encounter_stop,
-        reason_description,
-        LAG(encounter_stop) OVER (PARTITION BY patient_id ORDER BY encounter_start) AS previous_discharge_date,
-        LAG(encounter_class_id) OVER (PARTITION BY patient_id ORDER BY encounter_start) AS previous_encounter_class,
-        LAG(reason_description) OVER (PARTITION BY patient_id ORDER BY encounter_start) AS previous_reason
-    FROM fact_encounters
-    WHERE encounter_stop IS NOT NULL
-),
-readmissions AS (
-    SELECT
-        *,
-        -- DATEDIFF(interval, start, end) calculates the difference in days
-        DATEDIFF(day, previous_discharge_date, encounter_start) AS days_since_last_visit,
-        CASE
-            WHEN DATEDIFF(day, previous_discharge_date, encounter_start) <= 30
-            THEN 1 ELSE 0
-        END AS is_readmission_30day
-    FROM encounter_sequence
-    WHERE previous_discharge_date IS NOT NULL
-)
-SELECT
-    encounter_class_id,
-    COUNT(*) AS total_followup_encounters,
-    SUM(is_readmission_30day) AS readmissions_30day,
-   ROUND((CAST(SUM(is_readmission_30day) AS NUMERIC(18,2)) / COUNT(*)) * 100, 2) AS readmission_rate_pct,
-    ROUND(AVG(CASE WHEN is_readmission_30day = 1 THEN days_since_last_visit END), 1) AS avg_days_to_readmit
-FROM readmissions
-GROUP BY ROLLUP(encounter_class_id)
-ORDER BY readmission_rate_pct DESC;
 
