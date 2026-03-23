@@ -44,18 +44,7 @@ Specifically, the project aimed to:
 
 ## 3. Business Questions & Core KPIs
 
-The following four KPI families drove every analytical decision in this project:
-
-| # | KPI Family | Core Metric | 11-Year Overall |
-|---|-----------|-------------|-----------------|
-| 1 | **Volume & Admissions** | Total Encounters | **27,891** |
-| 2 | **Readmissions** | 30-Day Readmission Rate | **62.2%** (17,346 events) |
-| 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
-| 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
-
-**Key Business & Supporting Questions Answered by the Dashboard:** 
-
-The executive team wants clarity on the followings: [Open Dashboard](./mgh_dashboard.html)
+The executive team wants clarity on the followings questions: [Open Dashboard](./mgh_dashboard.html)
 
 ### 1. **Patient Volume Trends**
 * How many patients are being **admitted or readmitted** over time?
@@ -70,7 +59,14 @@ The executive team wants clarity on the followings: [Open Dashboard](./mgh_dashb
 ### 4. **Insurance Coverage**
 * How many **procedures** are covered by insurance?
 
-These KPIs help leadership understand capacity, financial performance, and care quality.
+These KPIs help leadership understand capacity, financial performance, and care quality
+
+| # | KPI Family | Core Metric | 11-Year Overall |
+|---|-----------|-------------|-----------------|
+| 1 | **Volume & Admissions** | Total Encounters | **27,891** |
+| 2 | **Readmissions** | 30-Day Readmission Rate | **62.2%** (17,346 events) |
+| 3 | **Length of Stay** | Avg LOS per Encounter | **0.30 days** (inpatient: 1.54 d) |
+| 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
 
 ---
 
