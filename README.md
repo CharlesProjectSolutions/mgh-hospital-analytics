@@ -96,6 +96,7 @@ Insights and recommendations are provided on the following key areas:
 
 ---
 
+
 These KPIs help leadership understand capacity, financial performance, and care quality
 
 | # | KPI Family | Core Metric | 11-Year Overall |
