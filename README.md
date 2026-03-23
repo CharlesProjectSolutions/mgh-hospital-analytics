@@ -203,7 +203,7 @@ This project uses **synthetic data** provided by [Maven Analytics](https://www.m
 
 <div align="center">
 
-**Massachusetts General Hospital · Synthetic Data 2011–2022 · Maven Analytics Hospital Challenge**
+**Massachusetts General Hospital · Synthetic Data 2011–2022**
 
 *Built with SQL · Python · Chart.js · HTML/CSS/JS · Tableau*
 
