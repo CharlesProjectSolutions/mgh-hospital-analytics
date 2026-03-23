@@ -1,6 +1,6 @@
 # 🏥 MGH Hospital Performance Analytics Dashboard
 
-> **Massachusetts General Hospital (MGH)** : requires a unified analytics dashboard suite to monitor operational efficiency, financial performance, and insurance coverage trends. The goal is to provide executives with a clear, actionable view of hospital performance using synthetic patient data from 2011–2022.
+> **Massachusetts General Hospital (MGH)** : required a unified analytics dashboard suite to monitor operational efficiency, financial performance, and insurance coverage trends. The goal is to provide executives with a clear, actionable view of hospital performance using synthetic patient data from 2011–2022.
 
 This project delivers a four‑page dashboard system:
 1. Executive Summary
