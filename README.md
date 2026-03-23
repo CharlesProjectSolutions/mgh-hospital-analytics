@@ -129,8 +129,6 @@ These KPIs help leadership understand capacity, financial performance, and care 
 | 4 | **Cost & Revenue** | Avg Cost per Visit | **$3,640** · Total Revenue **$101.5M** |
 
 ---
-
-### Analyze
 Key analytical outputs:
 
 | Analysis | Finding |
@@ -175,7 +173,7 @@ Key analytical outputs:
 ---
 
 
-## 10. Future Enhancements
+## 7. Future Enhancements
 
 The current dashboard is a strong analytical foundation. The following enhancements would move it toward a production-grade hospital intelligence platform:
 
