@@ -1,6 +1,13 @@
 # 🏥 MGH Hospital Performance Analytics Dashboard
 
-> **Maven Analytics Hospital Challenge** — End-to-end analytics project covering SQL, Python, Tableau, and an interactive HTML dashboard for Massachusetts General Hospital (synthetic dataset, 2011–2022).
+> **Massachusetts General Hospital (MGH)** : requires a unified analytics dashboard suite to monitor operational efficiency, financial performance, and insurance coverage trends. The goal is to provide executives with a clear, actionable view of hospital performance using synthetic patient data from 2011–2022.
+
+This project delivers a four‑page dashboard system:
+1. Executive Summary
+2. Operations
+3. Finance
+4. Insurance
+> End-to-end analytics project covering SQL, Python, Tableau, and an interactive HTML Wireframe/Prototype dashboard for MGH (synthetic dataset, 2011–2022).
 
 ---
 
@@ -144,7 +151,7 @@ Key analytical outputs:
 
 ---
 
-## 8. Insights Summary
+## 6. Insights Summary
 
 ### 📊 Volume & Admissions
 - **Hospital admissions grew 191% from 2011 to 2014** (1,336 → 3,885 encounters), the peak year, before stabilizing around 2,000–3,000 annually.
