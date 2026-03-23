@@ -11,11 +11,8 @@
 3. [Business Questions & Core KPIs](#3-business-questions--core-kpis)
 4. [Data Structure](#4-data-structure)
 5. [Dashboard Suite](#5-dashboard-suite)
-6. [Methodology](#6-methodology)
-7. [Wireframes & Prototypes](#7-wireframes--prototypes)
-8. [Insights Summary](#8-insights-summary)
-9. [How to Navigate the Repo](#9-how-to-navigate-the-repo)
-10. [Future Enhancements](#10-future-enhancements)
+6. [Insights Summary](#8-insights-summary)
+9. [Future Enhancements](#10-future-enhancements)
 
 ---
 
@@ -23,7 +20,7 @@
 
 This project was completed as part of the **Maven Analytics Hospital Challenge**, where I acted as a **Healthcare Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
-The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a **fully interactive, cross-filtered Tableau dashboard.
+The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a fully interactive, cross-filtered Tableau dashboard.
 
 The deliverables were designed to serve multiple stakeholders: clinical operations teams interested in patient flow and readmissions, finance leaders tracking costs and revenue, and payer-relations teams monitoring insurance coverage and reimbursement trends.
 
@@ -91,15 +88,11 @@ Designed fact tables: fact_encounters, fact_procedures, and mapped derived field
 
 ## 5. Dashboard Suite
 
-A downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html>
-to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
-  
-Insights and recommendations are provided on the following key areas:
+Insights and recommendations are provided on the following key areas, and a downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
 
 ### 📊 Executive Summary
 **Audience:** Hospital leadership & board
 **Purpose:** High-level snapshot of the full patient population across all years and visit types.
-**Filters:** Year · Visit Type
 **KPI Tiles:** Total Admissions · Total Readmissions · Avg LOS · Avg Cost/Visit · Insurance Coverage Rate · Top Age Group
 
 ---
@@ -107,7 +100,6 @@ Insights and recommendations are provided on the following key areas:
 ### ⚙️ Operations
 **Audience:** Clinical operations & nurse management
 **Purpose:** Drill into throughput efficiency, readmission rates, and visit-type mix.
-**Filters:** Year · Visit Type
 **KPI Tiles:** Avg LOS · Median LOS · Readmission Rate · Procedures per Visit
 
 ---
@@ -115,7 +107,6 @@ Insights and recommendations are provided on the following key areas:
 ### 💵 Finance
 **Audience:** CFO, revenue cycle management
 **Purpose:** Track cost per visit, total revenue, procedure costs, and payer-level reimbursement.
-**Filters:** Year · Payer
 **KPI Tiles:** Avg Cost/Visit · Total Revenue · Payer Coverage % · Top Procedure Category · High-Cost Patients
 
 ---
@@ -123,7 +114,6 @@ Insights and recommendations are provided on the following key areas:
 ### 🛡️ Insurance
 **Audience:** Payer relations, access & equity team
 **Purpose:** Analyse insurance coverage rates, payer mix, and the financial burden on uninsured patients.
-**Filters:** Year · Payer · Coverage Status
 **KPI Tiles:** Coverage Rate · Covered Procedures · Uninsured Procedure Cost · Largest Payer · Insured Encounters
 
 ---
@@ -162,12 +152,9 @@ Key analytical outputs:
 - **Hospital admissions grew 191% from 2011 to 2014** (1,336 → 3,885 encounters), the peak year, before stabilizing around 2,000–3,000 annually.
 - Ambulatory encounters dominate the visit mix, while **inpatient accounts for only ~4% of volume but the longest LOS** (avg 1.54 days vs 0.06 days for emergency).
 - The **65+ Senior age group** represents the majority of all encounters, consistent with MGH's role as a tertiary referral centre serving an older patient population.
-- **Resources:**
-
-
 
 ### ⚙️ Operations
-- **The 30-day readmission rate peaked at 68.4% in 2014** — the same year admissions peaked — suggesting capacity pressure may have contributed to premature discharges.
+- **The 30-day readmission rate peaked at 68.4% in 2014**, the same year admissions peaked suggesting capacity pressure may have contributed to premature discharges.
 - The lowest readmission rate recorded was **48.8% in 2011**, when volume was at its lowest, indicating a possible inverse relationship between throughput and readmission risk.
 - **Inpatient readmission rate (77.0%)** is the highest of any visit class and nearly 12pp above the overall average, signalling inpatient discharge protocols as the highest-priority intervention target.
 - Procedures per visit average 1.71 across the study period, with 47,701 total procedures logged against 27,891 encounters.
@@ -175,13 +162,13 @@ Key analytical outputs:
 ### 💵 Finance
 - **Total 11-year revenue was $101.5M**, with 2014 representing the single highest revenue year ($12.0M) — directly tracking the admission volume peak.
 - Average cost per visit peaked at **$4,301 in 2012**, driven by higher-acuity inpatient and emergency case mix in the early study period.
-- Despite $101.5M in total billed costs, **payer coverage averaged only 30.6%** — meaning patients bore approximately **$70M in out-of-pocket costs** over 11 years.
+- Despite $101.5M in total billed costs, **payer coverage averaged only 30.6%** meaning patients bore approximately **$70M in out-of-pocket costs** over 11 years.
 - The **"Other" procedure category** accounts for the largest share of total procedure cost, followed by Cardiac and Imaging, which together represent significant high-cost procedure clusters.
 - Medicare provides the best reimbursement ratio among insured payers, though its 40.8% share of encounters creates significant concentration risk around CMS policy changes.
 
 ### 🛡️ Insurance
 - **Coverage rates declined from a high of 47.4% in 2011 to a low of 23.0% in 2018** — a 24.4pp erosion that substantially increased patient financial burden during that period.
-- **Medicare is the single dominant payer at 40.8% of all encounters** (11,371 visits), with Medicaid and NO_INSURANCE the next largest groups — indicating a predominantly government-insured or uninsured patient base.
+- **Medicare is the single dominant payer at 40.8% of all encounters** (11,371 visits), with Medicaid and NO_INSURANCE the next largest groups, indicating a predominantly government-insured or uninsured patient base.
 - **8,807 encounters (31.6%) were entirely uninsured**, representing an estimated $32M+ in self-pay cost exposure based on the average cost per visit — a significant uncompensated care risk.
 - Of 47,701 total procedures, **32,599 (68.3%) had payer coverage** and 15,102 (31.7%) were self-pay, consistent with the ~31.6% uninsured encounter share.
 
