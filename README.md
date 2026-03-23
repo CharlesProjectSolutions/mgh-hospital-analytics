@@ -67,7 +67,7 @@ Targeted SQL queries regarding the various business questions can be found [here
 
 The SQL data ingestion queries utilized to create tables + bulk load CSVs files and perform quality checks can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_ingestion.sql)
 
-The SQL queries utilized to build data Model Views feeding Tableau dashboards can be found [here]()
+The SQL queries utilized to build data Model Views feeding Tableau dashboards can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_model_views)
 
 <img width="33000" height="2500" alt="converted_page_1" src="https://github.com/user-attachments/assets/db941141-c479-4587-948d-01e7cc7581d9" />
 
