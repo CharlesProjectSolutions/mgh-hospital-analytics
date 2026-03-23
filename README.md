@@ -86,6 +86,10 @@ The SQL queries utilized to build data Model Views feeding Tableau dashboards ca
 ---
 
 ## 5. Dashboard Suite
+
+A downloadable interactive wireframe and prototype are included here [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html>
+to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
+  
 Insights and recommendations are provided on the following key areas:
 
 ### 📊 Executive Summary
