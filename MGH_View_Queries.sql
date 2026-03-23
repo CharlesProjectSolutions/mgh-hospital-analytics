@@ -1,0 +1,270 @@
+
+
+/* SQL VIEWS TO FEED TABLEAU DASHBOARD  */
+
+/* ============================================================
+QUERY 1: ENCOUNTER-LEVEL MASTER FFILE 
+- Grain: one row per encounter
+- All dimension attributes attached.
+- Procedure stats rolled up to encounter level (count, total cost).
+HospitalEncounterDW Created — One row per encounter (widest SSoT)
+   ============================================================ 
+*/
+
+
+--DROP VIEW HospitalEncounterDW
+--CREATE VIEW HospitalEncounterDW AS
+
+/* 1. Calculate yearly totals and prior year values */
+
+WITH YearlyAdmissions AS (
+        -- First, aggregate your data by year
+    SELECT
+        encounter_year,
+        COUNT(DISTINCT encounter_id) AS current_admissions
+    FROM HospitalDW.dbo.fact_encounters
+    GROUP BY ROLLUP(encounter_year)
+),
+/* 2. Calculate the Delta and Pct Change based on the above */
+YoYMetrics AS (
+    SELECT
+    encounter_year,
+    current_admissions,
+    -- 1. Get the previous year's admissions using LAG
+    LAG(current_admissions) OVER (ORDER BY encounter_year) AS prior_year_admissions,
+    
+    -- 2. Calculate the raw change (Delta)
+    current_admissions - LAG(current_admissions) OVER (ORDER BY encounter_year) AS yoy_delta,
+    
+    -- 3. Calculate the Percentage Change (rounded to 1 decimal place)
+    CAST(
+        (current_admissions - LAG(current_admissions) OVER (ORDER BY encounter_year)) * 100.0 
+        / NULLIF(LAG(current_admissions) OVER (ORDER BY encounter_year), 0) 
+    AS DECIMAL(18, 1)) AS yoy_pct_change
+    FROM YearlyAdmissions
+)
+
+/* 3. Your Main Query */
+SELECT
+    /* ?? Encounter identifiers ????????????????????????????? */
+    fe.encounter_id,
+    CAST(fe.encounter_start AS DATETIME) AS EncounteRStart,
+    CAST(fe.encounter_stop AS DATETIME) AS encounterStop,
+    fe.encounter_duration_min,
+    
+	LAG(CAST(fe.encounter_stop AS DATETIME)) OVER (PARTITION BY fe.patient_id ORDER BY CAST(fe.encounter_start AS DATETIME)) AS PreviousDischargeDate,
+   
+    DATEDIFF(DAY,LAG(CAST(fe.encounter_stop AS DATETIME)) OVER (PARTITION BY fe.patient_id ORDER BY CAST(fe.encounter_start AS DATETIME)), CAST(fe.encounter_start AS DATETIME)) 
+	AS DaysSincePreviousDischarge,
+    
+	CASE WHEN DATEDIFF(DAY, LAG(CAST(fe.encounter_stop AS DATETIME)) OVER (PARTITION BY fe.patient_id ORDER BY CAST(fe.encounter_start AS DATETIME)),  
+	CAST(fe.encounter_start AS DATETIME)) <= 30 THEN 1 ELSE 0 END AS IsReadmission,
+
+	-- Grouping Payer names into Not Covered vs Covered
+    CASE WHEN payer_name IS NULL THEN 'Not Covered' ELSE 'Covered' END AS coverage_status,
+
+-- Grouping Payer names into Government vs Private vs Uninsured payer type
+	CASE WHEN payer_name IN ('Medicare', 'Medicaid', 'Dual Eligible') THEN 'Government'
+         WHEN payer_name IS NULL THEN 'Uninsured' ELSE 'PrivateS' END AS Payer_Type,
+
+
+    /* ?? NEW: YoY Columns (Joined from CTE) ???????????????? */
+    yoy.current_admissions,
+    yoy.prior_year_admissions,
+    yoy.yoy_delta,
+    yoy.yoy_pct_change,
+
+    /* ?? Calendar dimension ???????????????????????????????? */
+    dd.date          AS encounter_date,
+    dd.year          AS encounter_year,
+    dd.quarter       AS encounter_quarter,
+    dd.month         AS encounter_month,
+    dd.month_name    AS encounter_month_name,
+    dd.day_name      AS encounter_day_name,
+    dd.is_weekend    AS encounter_is_weekend,
+
+    /* ?? Patient dimension ????????????????????????????????? */
+    dp.patient_id,
+    dp.first_name,
+    dp.last_name,
+    dp.gender,
+    dp.race,
+    dp.ethnicity,
+    dp.marital,
+    dp.birthdate,
+    dp.deathdate,
+    dp.is_deceased,
+    dp.age_at_ref_date,
+    dp.city          AS patient_city,
+    dp.state         AS patient_state,
+    dp.county        AS patient_county,
+    dp.zip           AS patient_zip,
+    fe.patient_age_at_encounter,
+	CASE 
+        WHEN DATEDIFF(year, birthdate, CAST(fe.encounter_start AS DATETIME)) < 18 THEN '0–17 Pediatric'
+        WHEN DATEDIFF(year, birthdate, CAST(fe.encounter_start AS DATETIME)) < 35 THEN '18–34 Young Adult'
+        WHEN DATEDIFF(year, birthdate, CAST(fe.encounter_start AS DATETIME)) < 50 THEN '35–49 Middle Age'
+        WHEN DATEDIFF(year, birthdate, CAST(fe.encounter_start AS DATETIME)) < 65 THEN '50–64 Pre-Senior'
+        ELSE '65+ Senior' 
+    END AS 'Age Group',
+
+    /* ?? Payer dimension ??????????????????????????????????? */
+    py.payer_id,
+    py.payer_name,
+    py.state         AS payer_state,
+
+    /* ?? Encounter class dimension ????????????????????????? */
+    ec.encounter_class,
+
+    /* ?? Encounter codes & reason ?????????????????????????? */
+    fe.encounter_code,
+    fe.encounter_description,
+    fe.reason_code        AS encounter_reason_code,
+    fe.reason_description AS encounter_reason_description,
+
+    /* ?? Financial measures ???????????????????????????????? */
+    fe.base_encounter_cost,
+    fe.total_claim_cost,
+    fe.payer_coverage,
+    fe.patient_out_of_pocket,
+
+    /* ?? Procedure roll-up ?? */
+    COALESCE(pr_agg.procedure_count, 0)  AS procedure_count,
+    COALESCE(pr_agg.procedure_cost,  0)  AS total_procedure_cost,
+    COALESCE(pr_agg.procedure_cost, 0) + fe.total_claim_cost AS total_combined_cost
+
+FROM       dbo.fact_encounters      fe
+LEFT JOIN  dbo.dim_date             dd      ON  dd.date_key = fe.date_key
+LEFT JOIN  dbo.dim_patients         dp      ON  dp.patient_id = fe.patient_id
+LEFT JOIN  dbo.dim_payers           py      ON  py.payer_id = fe.payer_id
+LEFT JOIN  dbo.dim_encounter_class  ec      ON  ec.encounter_class_id = fe.encounter_class_id
+
+/* 4. Final Join: Attach the calculated YoY metrics back to the main table by year */
+LEFT JOIN  YoYMetrics yoy ON yoy.encounter_year = dd.year
+
+LEFT JOIN (
+    SELECT
+        encounter_id,
+        COUNT(*)        AS procedure_count,
+        SUM(base_cost)  AS procedure_cost
+    FROM  dbo.fact_procedures
+    GROUP BY encounter_id
+) pr_agg  ON  pr_agg.encounter_id = fe.encounter_id;
+
+
+
+
+
+/* ============================================================
+   QUERY 2: PROCEDURE-LEVEL MASTER
+   Grain: one row per procedure
+   Full granularity — every procedure with its parent encounter and all dimension attributes attached.
+   For cost-by-procedure, procedure frequency & clinical pathway analysis.
+   ============================================================ */
+
+--DROP VIEW HospitalProcedureDW
+--CREATE VIEW HospitalProcedureDW AS
+
+SELECT
+
+    /* ?? Procedure identifiers ????????????????????????????? */
+    fp.procedure_key,
+    CAST(fp.procedure_start AS DATETIME) AS ProcedureStart,
+    CAST(fp.procedure_stop AS DATETIME) AS ProcedureStop,
+    fp.procedure_duration_min,
+    fp.procedure_code,
+    fp.procedure_description,
+    fp.base_cost              AS procedure_base_cost,
+    fp.reason_code            AS procedure_reason_code,
+    fp.reason_description     AS procedure_reason_description,
+    fp.patient_age_at_procedure,
+
+
+	CASE
+    WHEN LOWER(fp.procedure_description) LIKE '%dialysis%' THEN 'Dialysis'
+    WHEN LOWER(fp.procedure_description) LIKE '%chemo%'
+      OR LOWER(fp.procedure_description) LIKE '%radiation%'
+      OR LOWER(fp.procedure_description) LIKE '%tumor%' THEN 'Cancer Treatment'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%injection%'
+      OR LOWER(fp.procedure_description) LIKE '%infusion%'
+      OR LOWER(fp.procedure_description) LIKE '%transfusion%' THEN 'Injection/Infusion'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%bronch%'
+      OR LOWER(fp.procedure_description) LIKE '%pulmon%'
+      OR LOWER(fp.procedure_description) LIKE '%respiratory%' THEN 'Respiratory'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%cardiac%'
+      OR LOWER(fp.procedure_description) LIKE '%cardio%'
+      OR LOWER(fp.procedure_description) LIKE '%heart%' THEN 'Cardiac'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%surg%'
+      OR LOWER(fp.procedure_description) LIKE '%repair%'
+      OR LOWER(fp.procedure_description) LIKE '%remov%'
+      OR LOWER(fp.procedure_description) LIKE '%resect%' THEN 'Surgery'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%scan%'
+      OR LOWER(fp.procedure_description) LIKE '%imaging%'
+      OR LOWER(fp.procedure_description) LIKE '%x-ray%'
+      OR LOWER(fp.procedure_description) LIKE '%ultrasound%'
+      OR LOWER(fp.procedure_description) LIKE '%mri%' THEN 'Imaging/Diagnostic'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%screen%'
+      OR LOWER(fp.procedure_description) LIKE '%vaccin%'
+      OR LOWER(fp.procedure_description) LIKE '%immuniz%' THEN 'Preventive'
+                                                    
+    WHEN LOWER(fp.procedure_description) LIKE '%exam%'
+      OR LOWER(fp.procedure_description) LIKE '%assessment%'
+      OR LOWER(fp.procedure_description) LIKE '%review%' THEN 'Assessment'
+    ELSE 'Other' END AS procedure_category,
+
+
+    /* ?? Parent encounter ?????????????????????????????????? */
+    fe.encounter_id,
+    fe.encounter_start,
+    fe.encounter_class_id,
+    ec.encounter_class,
+    fe.encounter_description,
+    fe.total_claim_cost       AS encounter_total_claim_cost,
+    fe.patient_out_of_pocket  AS encounter_out_of_pocket,
+
+    /* ?? Calendar dimension (procedure date) ??????????????? */
+    dd.date          AS procedure_date,
+    dd.year          AS procedure_year,
+    dd.quarter       AS procedure_quarter,
+    dd.month_name    AS procedure_month_name,
+    dd.day_name      AS procedure_day_name,
+
+    /* ?? Patient dimension ????????????????????????????????? */
+    dp.patient_id,
+    dp.first_name,
+    dp.last_name,
+    dp.gender,
+    dp.race,
+    dp.ethnicity,
+    dp.marital,
+    dp.age_at_ref_date,
+    dp.is_deceased,
+    dp.city          AS patient_city,
+    dp.state         AS patient_state,
+
+    /* ?? Payer (from parent encounter) ????????????????????? */
+    py.payer_id,
+    py.payer_name
+
+FROM dbo.fact_procedures fp
+
+/* Link procedure -> parent encounter (INNER: every procedure has an encounter) */
+INNER JOIN dbo.fact_encounters fe  ON fe.encounter_id = fp.encounter_id
+
+/* Calendar on the procedure's own date */
+LEFT JOIN  dbo.dim_date dd  ON  dd.date_key = fp.date_key
+
+/* Patient */
+LEFT JOIN  dbo.dim_patients dp  ON  dp.patient_id = fp.patient_id
+
+/* Encounter class from encounter */
+LEFT JOIN  dbo.dim_encounter_class  ec  ON  ec.encounter_class_id = fe.encounter_class_id
+
+/* Payer from encounter (procedures don't carry payer directly) */
+LEFT JOIN  dbo.dim_payers           py  ON  py.payer_id          = fe.payer_id
