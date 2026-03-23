@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MGH Hospital Analytics | 2011-2022</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --sid:240px;--bg:#F4F6FA;--wh:#fff;
+  --acc:#4F7BEF;--acl:#EBF0FF;
+  --grn:#10B981;--gnl:#D1FAE5;
+  --red:#EF4444;--rdl:#FEE2E2;
+  --pur:#8B5CF6;--amb:#F59E0B;--tel:#14B8A6;
+  --txt:#1E293B;--mut:#64748B;--bdr:#E2E8F0;
+  --shd:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{display:flex;height:100vh;overflow:hidden;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  font-size:14px;color:var(--txt);background:var(--bg)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sid);min-width:var(--sid);background:var(--wh);
+  border-right:1px solid var(--bdr);display:flex;flex-direction:column;
+  height:100vh;overflow-y:auto;flex-shrink:0}
+.sid-logo{padding:18px 16px 14px;border-bottom:1px solid var(--bdr)}
+.sid-logo-inner{display:flex;align-items:center;gap:10px}
+.sid-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--acc);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0}
+.sid-logo-txt{font-size:13px;font-weight:700;color:var(--txt);line-height:1.3}
+.sid-logo-txt span{display:block;font-size:10px;font-weight:400;color:var(--mut)}
+
+.sid-nav{padding:14px 10px 10px}
+.sid-section-lbl{font-size:10px;font-weight:700;color:var(--mut);
+  text-transform:uppercase;letter-spacing:.8px;padding:0 8px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;
+  border-radius:8px;cursor:pointer;color:var(--mut);font-size:13px;font-weight:500;
+  transition:all .15s;margin-bottom:2px;user-select:none}
+.nav-item:hover{background:#F1F5F9;color:var(--txt)}
+.nav-item.active{background:var(--acl);color:var(--acc);font-weight:600}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+
+.sid-filters{padding:10px 10px 18px;border-top:1px solid var(--bdr);margin-top:8px}
+.filter-grp{padding:0 2px;margin-bottom:11px}
+.filter-grp label{display:block;font-size:11px;font-weight:600;color:var(--mut);
+  margin-bottom:4px;padding-left:2px}
+.filter-grp select{width:100%;padding:7px 28px 7px 10px;border:1px solid var(--bdr);
+  border-radius:8px;font-size:12px;color:var(--txt);background:var(--wh);cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;
+  transition:border-color .15s}
+.filter-grp select:focus{outline:none;border-color:var(--acc)}
+.filter-reset{width:100%;margin-top:6px;padding:7px;border:1px solid var(--bdr);
+  border-radius:8px;font-size:11px;font-weight:600;color:var(--mut);background:var(--wh);
+  cursor:pointer;transition:all .15s}
+.filter-reset:hover{background:#F1F5F9;color:var(--txt);border-color:var(--txt)}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;height:100vh;display:flex;flex-direction:column;min-width:0}
+.page-hdr{background:var(--wh);border-bottom:1px solid var(--bdr);
+  padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;gap:12px}
+.page-title{font-size:20px;font-weight:700;color:var(--txt);line-height:1}
+.page-sub{font-size:12px;color:var(--mut);margin-top:3px}
+.date-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;
+  border:1px solid var(--bdr);border-radius:20px;font-size:12px;
+  color:var(--mut);background:var(--wh);font-weight:500;white-space:nowrap;flex-shrink:0}
+.date-pill svg{width:13px;height:13px;stroke:var(--mut)}
+.active-filters{font-size:11px;color:var(--acc);background:var(--acl);
+  padding:3px 10px;border-radius:20px;font-weight:600;flex-shrink:0}
+
+.content{padding:18px 22px;flex:1}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:14px}
+.kpi-card{background:var(--wh);border-radius:var(--r);padding:16px 18px;
+  box-shadow:var(--shd);border:1px solid var(--bdr);transition:box-shadow .15s,transform .15s}
+.kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.1);transform:translateY(-1px)}
+.kpi-lbl{font-size:10.5px;font-weight:600;color:var(--mut);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:8px}
+.kpi-val-row{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.kpi-val{font-size:24px;font-weight:700;color:var(--txt);line-height:1}
+.kpi-sub{font-size:11px;color:var(--mut);margin-top:5px}
+.tr-up{font-size:11px;font-weight:700;color:var(--grn)}
+.tr-dn{font-size:11px;font-weight:700;color:var(--red)}
+.tr-neu{font-size:11px;font-weight:600;color:var(--mut)}
+
+/* ── INSIGHTS ── */
+.insights-row{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.ins-card{background:var(--wh);border-radius:10px;padding:11px 13px;
+  border:1px solid var(--bdr);border-left:4px solid var(--acc);
+  box-shadow:var(--shd);display:flex;align-items:flex-start;gap:8px;
+  transition:box-shadow .15s}
+.ins-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.09)}
+.ins-icon{font-size:16px;line-height:1.4;min-width:19px;text-align:center}
+.ins-lbl{font-size:9.5px;font-weight:700;color:var(--mut);text-transform:uppercase;
+  letter-spacing:.7px;margin-bottom:3px}
+.ins-txt{font-size:11px;color:var(--txt);line-height:1.45;font-weight:500}
+
+/* ── CHARTS ── */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+.chart-card{background:var(--wh);border-radius:var(--r);padding:16px 18px;
+  box-shadow:var(--shd);border:1px solid var(--bdr)}
+.chart-ttl{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.chart-sub{font-size:11px;color:var(--mut);margin-bottom:12px}
+.ch{position:relative;height:225px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){
+  .insights-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){
+  .sidebar{display:none}
+  .charts-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sid-logo">
+    <div class="sid-logo-inner">
+      <div class="sid-logo-icon">&#127973;</div>
+      <div class="sid-logo-txt">Hospital Analytics<span>MGH &nbsp;&middot;&nbsp; 2011&ndash;2022</span></div>
+    </div>
+  </div>
+
+  <div class="sid-nav">
+    <div class="sid-section-lbl">Dashboards</div>
+    <div class="nav-item active" id="nav-exec" onclick="showTab('exec',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>&nbsp; Executive Summary
+    </div>
+    <div class="nav-item" id="nav-ops" onclick="showTab('ops',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>&nbsp; Operations
+    </div>
+    <div class="nav-item" id="nav-fin" onclick="showTab('fin',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>&nbsp; Finance
+    </div>
+    <div class="nav-item" id="nav-ins" onclick="showTab('ins',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>&nbsp; Insurance
+    </div>
+  </div>
+
+  <div class="sid-filters">
+    <div class="sid-section-lbl">Filters</div>
+    <div class="filter-grp">
+      <label>Year</label>
+      <select id="sYear" onchange="updateActive()">
+        <option value="all">All Years (2011&ndash;2021)</option>
+        <option>2011</option><option>2012</option><option>2013</option>
+        <option>2014</option><option>2015</option><option>2016</option>
+        <option>2017</option><option>2018</option><option>2019</option>
+        <option>2020</option><option>2021</option>
+      </select>
+    </div>
+    <div class="filter-grp">
+      <label>Admission Type</label>
+      <select id="sClass" onchange="updateActive()">
+        <option value="all">All Types</option>
+        <option>ambulatory</option><option>emergency</option>
+        <option>inpatient</option><option>outpatient</option>
+        <option>urgentcare</option><option>wellness</option>
+      </select>
+    </div>
+    <div class="filter-grp">
+      <label>Insurance Type</label>
+      <select id="sPayer" onchange="updateActive()">
+        <option value="all">All Payers</option>
+        <option>Medicare</option><option>NO_INSURANCE</option>
+        <option>Medicaid</option><option>Humana</option><option>Aetna</option>
+        <option>Blue Cross Blue Shield</option><option>Dual Eligible</option>
+        <option>UnitedHealthcare</option><option>Cigna Health</option><option>Anthem</option>
+      </select>
+    </div>
+    <div class="filter-grp">
+      <label>Coverage Status</label>
+      <select id="sCov" onchange="updateActive()">
+        <option value="all">All</option>
+        <option value="covered">Covered</option>
+        <option value="uncovered">Not Covered</option>
+      </select>
+    </div>
+    <button class="filter-reset" onclick="resetFilters()">&#8635; Reset Filters</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-hdr">
+    <div>
+      <div class="page-title" id="pageTitle">Executive Summary</div>
+      <div class="page-sub">MGH Hospital Performance (2011&ndash;2022)</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="active-filters" id="filterBadge" style="display:none"></span>
+      <div class="date-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;stroke:var(--mut)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2011 &ndash; 2022</div>
+    </div>
+  </div>
+  <div class="content">
+
+<div id="exec" class="tab-content active">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#4F7BEF">Total Admissions</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="e-adm">—</span><span id="e-adm-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="e-adm-sub">All encounters</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#EF4444">Total Readmissions</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="e-readm">—</span><span id="e-readm-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="e-readm-sub">30-day window</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#14B8A6">Avg Length of Stay</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="e-los">—</span><span id="e-los-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="e-los-sub">days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#8B5CF6">Avg Cost / Visit</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="e-cost">—</span><span id="e-cost-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="e-cost-sub">total claim cost</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#10B981">Insurance Coverage</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="e-cov">—</span><span id="e-cov-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="e-cov-sub">payer-funded</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#F59E0B">Top Age Group</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">65+ Senior</span></div>
+      <div class="kpi-sub">Largest patient segment</div>
+    </div>
+  </div>
+  <div class="insights-row"><div class="ins-card" id="e-ins1"></div><div class="ins-card" id="e-ins2"></div><div class="ins-card" id="e-ins3"></div><div class="ins-card" id="e-ins4"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Admissions &amp; Readmissions Over Time</div>
+      <div class="chart-sub">Annual volume with 30-day readmission overlay</div>
+      <div class="ch"><canvas id="eAdmChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Avg Length of Stay by Year</div>
+      <div class="chart-sub">Mean encounter duration in days &mdash; selected type</div>
+      <div class="ch"><canvas id="eLosChart"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Insurance Coverage Rate</div>
+      <div class="chart-sub">Payer-funded share of encounters</div>
+      <div class="ch"><canvas id="eCovChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Patient Age Distribution</div>
+      <div class="chart-sub">Encounters by age group</div>
+      <div class="ch"><canvas id="eAgeChart"></canvas></div>
+    </div>
+  </div>
+</div>
+<div id="ops" class="tab-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#14B8A6">Avg Length of Stay</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="o-los">—</span><span id="o-los-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="o-los-sub">days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#EF4444">Readmission Rate</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="o-rr">—</span><span id="o-rr-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="o-rr-sub">30-day window</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#4F7BEF">Total Admissions</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="o-adm">—</span><span id="o-adm-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="o-adm-sub"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#8B5CF6">Procedures / Visit</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">1.71</span></div>
+      <div class="kpi-sub">47,701 total procedures</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#F59E0B">Inpatient RR</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">77.0%</span></div>
+      <div class="kpi-sub">Highest readmission class</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#10B981">Emergency LOS</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">0.06 d</span></div>
+      <div class="kpi-sub">Fastest turnaround class</div>
+    </div>
+  </div>
+  <div class="insights-row"><div class="ins-card" id="o-ins1"></div><div class="ins-card" id="o-ins2"></div><div class="ins-card" id="o-ins3"></div><div class="ins-card" id="o-ins4"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Avg LOS by Visit Type</div>
+      <div class="chart-sub">Mean length of stay per encounter class</div>
+      <div class="ch"><canvas id="oLosChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Readmission Rate Over Time</div>
+      <div class="chart-sub">30-day readmission rate (%) by year</div>
+      <div class="ch"><canvas id="oRrChart"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Admissions Trend</div>
+      <div class="chart-sub">Annual encounters &amp; readmissions &mdash; selected type</div>
+      <div class="ch"><canvas id="oAdmChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Visit Type Distribution</div>
+      <div class="chart-sub">Share of encounters by visit class</div>
+      <div class="ch"><canvas id="oJourneyChart"></canvas></div>
+    </div>
+  </div>
+</div>
+<div id="fin" class="tab-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#8B5CF6">Avg Cost / Visit</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="f-cost">—</span><span id="f-cost-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="f-cost-sub">total claim cost</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#4F7BEF">Total Revenue</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="f-rev">—</span><span id="f-rev-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="f-rev-sub">all encounter costs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#10B981">Payer Coverage</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="f-cov">—</span><span id="f-cov-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="f-cov-sub">of claims covered</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#EF4444">Coverage Gap</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="f-gap">—</span>
+      </div><div class="kpi-sub" id="f-gap-sub">patient out-of-pocket</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#F59E0B">Top Proc Category</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">Other</span></div>
+      <div class="kpi-sub">Largest cost category</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#14B8A6">High-Cost Patients</div>
+      <div class="kpi-val-row"><span class="kpi-val" style="font-size:18px">90</span></div>
+      <div class="kpi-sub">Avg cost &gt; $10K/visit</div>
+    </div>
+  </div>
+  <div class="insights-row"><div class="ins-card" id="f-ins1"></div><div class="ins-card" id="f-ins2"></div><div class="ins-card" id="f-ins3"></div><div class="ins-card" id="f-ins4"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Avg Cost per Visit by Year</div>
+      <div class="chart-sub">Annual average total claim cost &mdash; selected payer</div>
+      <div class="ch"><canvas id="fCostChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Procedure Category Costs</div>
+      <div class="chart-sub">Sum of procedure costs by category</div>
+      <div class="ch"><canvas id="fPcatChart"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Total Revenue vs Payer Coverage</div>
+      <div class="chart-sub">Annual billed vs insurer reimbursement</div>
+      <div class="ch"><canvas id="fRevChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Cost &amp; Coverage by Payer</div>
+      <div class="chart-sub">Total billed vs payer coverage per insurer</div>
+      <div class="ch"><canvas id="fPayerChart"></canvas></div>
+    </div>
+  </div>
+</div>
+<div id="ins" class="tab-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#10B981">Coverage Rate</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="i-cr">—</span><span id="i-cr-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="i-cr-sub">payer-funded portion</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#4F7BEF">Covered Procedures</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="i-cov">—</span>
+      </div><div class="kpi-sub" id="i-cov-sub">of total procedures</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#EF4444">Uninsured Proc Cost</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="i-ucost">—</span>
+      </div><div class="kpi-sub" id="i-ucost-sub">self-pay burden</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#F59E0B">Largest Payer</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="i-top">—</span>
+      </div><div class="kpi-sub" id="i-top-sub">by encounter share</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl" style="color:#8B5CF6">Insured Encounters</div>
+      <div class="kpi-val-row">
+        <span class="kpi-val" id="i-ins">—</span><span id="i-ins-tr" class="tr-neu"></span>
+      </div><div class="kpi-sub" id="i-ins-sub">with coverage</div>
+    </div>
+  </div>
+  <div class="insights-row"><div class="ins-card" id="i-ins1"></div><div class="ins-card" id="i-ins2"></div><div class="ins-card" id="i-ins3"></div><div class="ins-card" id="i-ins4"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Payer Mix &mdash; Share of Encounters</div>
+      <div class="chart-sub">Distribution by insurance provider</div>
+      <div class="ch"><canvas id="iPayerChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Covered vs Not Covered by Year</div>
+      <div class="chart-sub">Annual procedure count by coverage status</div>
+      <div class="ch"><canvas id="iCovBarChart"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-ttl">Coverage Rate Over Time</div>
+      <div class="chart-sub">Payer coverage as % of total claims per year</div>
+      <div class="ch"><canvas id="iCovTrendChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Payer: Billed vs Coverage Amount</div>
+      <div class="chart-sub">Total billed vs reimbursement per insurer</div>
+      <div class="ch"><canvas id="iPayerCovChart"></canvas></div>
+    </div>
+  </div>
+</div>
+  </div>
+</main>
+<script>
+const D = {"years": [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], "classes": ["ambulatory", "emergency", "inpatient", "outpatient", "urgentcare", "wellness"], "payers": ["Medicare", "NO_INSURANCE", "Medicaid", "Humana", "Aetna", "Blue Cross Blue Shield", "Dual Eligible", "UnitedHealthcare", "Cigna Health", "Anthem"], "pcats": ["Other", "Cardiac", "Preventive", "Cancer Tx", "Imaging", "Dialysis", "Inj/Infusion", "Surgery"], "age_labels": ["0-17 Pediatric", "18-34 Young Adult", "35-49 Middle Age", "50-64 Pre-Senior", "65+ Senior"], "kpi_yr": {"2011": {"adm": 1336, "readm": 652, "rr": 48.8, "los": 0.09, "cost": 3298.0, "rev": 4405937.0, "cov": 47.4, "ins": 912, "unins": 424}, "2012": {"adm": 2106, "readm": 1141, "rr": 54.2, "los": 0.07, "cost": 4301.0, "rev": 9058314.0, "cov": 31.7, "ins": 1353, "unins": 753}, "2013": {"adm": 2495, "readm": 1520, "rr": 60.9, "los": 0.09, "cost": 4050.0, "rev": 10105273.0, "cov": 33.9, "ins": 1573, "unins": 922}, "2014": {"adm": 3885, "readm": 2658, "rr": 68.4, "los": 1.59, "cost": 3092.0, "rev": 12011662.0, "cov": 29.6, "ins": 2760, "unins": 1125}, "2015": {"adm": 2469, "readm": 1549, "rr": 62.7, "los": 0.07, "cost": 4101.0, "rev": 10124653.0, "cov": 29.4, "ins": 1635, "unins": 834}, "2016": {"adm": 2451, "readm": 1531, "rr": 62.5, "los": 0.08, "cost": 3422.0, "rev": 8386701.0, "cov": 25.7, "ins": 1619, "unins": 832}, "2017": {"adm": 2360, "readm": 1456, "rr": 61.7, "los": 0.11, "cost": 4066.0, "rev": 9596894.0, "cov": 31.2, "ins": 1674, "unins": 686}, "2018": {"adm": 2292, "readm": 1369, "rr": 59.7, "los": 0.21, "cost": 3816.0, "rev": 8746818.0, "cov": 23.0, "ins": 1501, "unins": 791}, "2019": {"adm": 2228, "readm": 1374, "rr": 61.7, "los": 0.09, "cost": 4002.0, "rev": 8915339.0, "cov": 32.1, "ins": 1618, "unins": 610}, "2020": {"adm": 2519, "readm": 1591, "rr": 63.2, "los": 0.11, "cost": 4087.0, "rev": 10294078.0, "cov": 29.5, "ins": 1706, "unins": 813}, "2021": {"adm": 3530, "readm": 2346, "rr": 66.5, "los": 0.06, "cost": 2600.0, "rev": 9177232.0, "cov": 31.2, "ins": 2577, "unins": 953}}, "kpi_cls": {"ambulatory": {"adm": 12537, "readm": 8081, "rr": 64.5, "los": 0.39, "cost": 2894.0, "rev": 36283441.0, "cov": 35.6, "ins": 8084, "unins": 4453}, "emergency": {"adm": 2322, "readm": 1538, "rr": 66.2, "los": 0.06, "cost": 4630.0, "rev": 10750052.0, "cov": 30.2, "ins": 1767, "unins": 555}, "inpatient": {"adm": 1135, "readm": 874, "rr": 77.0, "los": 1.54, "cost": 7761.0, "rev": 8809134.0, "cov": 41.9, "ins": 803, "unins": 332}, "outpatient": {"adm": 6300, "readm": 3677, "rr": 58.4, "los": 0.24, "cost": 2237.0, "rev": 14094967.0, "cov": 26.8, "ins": 4669, "unins": 1631}, "urgentcare": {"adm": 3666, "readm": 2758, "rr": 75.2, "los": 0.01, "cost": 6369.0, "rev": 23349350.0, "cov": 13.1, "ins": 2167, "unins": 1499}, "wellness": {"adm": 1931, "readm": 418, "rr": 21.6, "los": 0.01, "cost": 4261.0, "rev": 8227432.0, "cov": 53.7, "ins": 1594, "unins": 337}}, "adm_trend": {"ambulatory": {"adm": [667, 895, 1106, 2341, 1073, 1073, 987, 933, 846, 1192, 1303], "readm": [417, 473, 665, 1786, 648, 659, 590, 532, 470, 787, 955]}, "emergency": {"adm": [55, 183, 225, 216, 228, 250, 218, 247, 227, 234, 221], "readm": [26, 114, 142, 141, 154, 174, 136, 160, 161, 147, 171]}, "inpatient": {"adm": [83, 93, 134, 118, 111, 124, 126, 81, 134, 72, 55], "readm": [55, 69, 111, 88, 79, 91, 96, 58, 123, 58, 43]}, "outpatient": {"adm": [327, 444, 485, 694, 506, 481, 475, 480, 456, 497, 1418], "readm": [118, 234, 298, 354, 330, 294, 293, 300, 283, 302, 850]}, "urgentcare": {"adm": [30, 299, 359, 327, 380, 341, 385, 377, 397, 365, 378], "readm": [14, 219, 275, 238, 299, 269, 301, 281, 297, 265, 280]}, "wellness": {"adm": [174, 192, 186, 189, 171, 182, 169, 174, 168, 159, 155], "readm": [22, 32, 29, 51, 39, 44, 40, 38, 40, 32, 47]}, "all": {"adm": [1336, 2106, 2495, 3885, 2469, 2451, 2360, 2292, 2228, 2519, 3530], "readm": [652, 1141, 1520, 2658, 1549, 1531, 1456, 1369, 1374, 1591, 2346]}}, "los_trend": {"ambulatory": [0.03, 0.04, 0.04, 1.94, 0.04, 0.05, 0.04, 0.04, 0.04, 0.04, 0.04], "emergency": [0.14, 0.04, 0.06, 0.04, 0.04, 0.04, 0.12, 0.05, 0.04, 0.15, 0.04], "inpatient": [1.0, 1.0, 1.17, 1.01, 1.05, 1.0, 1.45, 5.26, 1.0, 2.56, 2.16], "outpatient": [0.01, 0.01, 0.01, 2.13, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01], "urgentcare": [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01], "wellness": [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01], "all": [0.09, 0.07, 0.09, 1.59, 0.07, 0.08, 0.11, 0.21, 0.09, 0.11, 0.06]}, "cost_trend": {"ambulatory": [2237.0, 4029.0, 3219.0, 2566.0, 3620.0, 2487.0, 3651.0, 3024.0, 3154.0, 2356.0, 2264.0], "emergency": [4481.0, 5103.0, 3715.0, 4507.0, 3926.0, 4051.0, 3892.0, 4695.0, 5245.0, 6488.0, 4574.0], "inpatient": [12698.0, 9033.0, 6265.0, 8437.0, 9549.0, 6734.0, 6940.0, 6353.0, 2912.0, 14052.0, 7112.0], "outpatient": [1760.0, 2311.0, 2784.0, 1981.0, 2462.0, 2277.0, 2658.0, 2694.0, 2793.0, 3511.0, 1207.0], "urgentcare": [8921.0, 6334.0, 7875.0, 6186.0, 6141.0, 5732.0, 5941.0, 5836.0, 6552.0, 6699.0, 6235.0], "wellness": [4426.0, 3948.0, 3723.0, 3372.0, 4125.0, 4505.0, 4266.0, 4360.0, 4710.0, 4813.0, 4882.0], "all": [3298.0, 4301.0, 4050.0, 3092.0, 4101.0, 3422.0, 4066.0, 3816.0, 4001.0, 4087.0, 2600.0]}, "rr_trend": {"ambulatory": [62.5, 52.8, 60.1, 76.3, 60.4, 61.4, 59.8, 57.0, 55.6, 66.0, 73.3], "emergency": [47.3, 62.3, 63.1, 65.3, 67.5, 69.6, 62.4, 64.8, 70.9, 62.8, 77.4], "inpatient": [66.3, 74.2, 82.8, 74.6, 71.2, 73.4, 76.2, 71.6, 91.8, 80.6, 78.2], "outpatient": [36.1, 52.7, 61.4, 51.0, 65.2, 61.1, 61.7, 62.5, 62.1, 60.8, 59.9], "urgentcare": [46.7, 73.2, 76.6, 72.8, 78.7, 78.9, 78.2, 74.5, 74.8, 72.6, 74.1], "wellness": [12.6, 16.7, 15.6, 27.0, 22.8, 24.2, 23.7, 21.8, 23.8, 20.1, 30.3], "all": [48.8, 54.2, 60.9, 68.4, 62.7, 62.5, 61.7, 59.7, 61.7, 63.2, 66.5]}, "payer_yr": {"2011": {"counts": [561, 424, 56, 64, 22, 30, 30, 90, 27, 32], "pcts": [42.0, 31.7, 4.2, 4.8, 1.6, 2.2, 2.2, 6.7, 2.0, 2.4]}, "2012": {"counts": [794, 753, 105, 90, 45, 101, 55, 55, 53, 55], "pcts": [37.7, 35.8, 5.0, 4.3, 2.1, 4.8, 2.6, 2.6, 2.5, 2.6]}, "2013": {"counts": [955, 922, 164, 86, 52, 93, 50, 49, 70, 54], "pcts": [38.3, 37.0, 6.6, 3.4, 2.1, 3.7, 2.0, 2.0, 2.8, 2.2]}, "2014": {"counts": [1497, 1125, 221, 219, 227, 106, 82, 195, 101, 112], "pcts": [38.5, 29.0, 5.7, 5.6, 5.8, 2.7, 2.1, 5.0, 2.6, 2.9]}, "2015": {"counts": [993, 834, 164, 113, 77, 86, 45, 51, 49, 57], "pcts": [40.2, 33.8, 6.6, 4.6, 3.1, 3.5, 1.8, 2.1, 2.0, 2.3]}, "2016": {"counts": [988, 832, 104, 86, 82, 82, 75, 64, 82, 56], "pcts": [40.3, 33.9, 4.2, 3.5, 3.3, 3.3, 3.1, 2.6, 3.3, 2.3]}, "2017": {"counts": [1014, 686, 157, 92, 66, 80, 51, 70, 79, 65], "pcts": [43.0, 29.1, 6.7, 3.9, 2.8, 3.4, 2.2, 3.0, 3.3, 2.8]}, "2018": {"counts": [870, 791, 106, 71, 102, 50, 69, 94, 82, 57], "pcts": [38.0, 34.5, 4.6, 3.1, 4.5, 2.2, 3.0, 4.1, 3.6, 2.5]}, "2019": {"counts": [1034, 610, 122, 61, 55, 75, 79, 87, 51, 54], "pcts": [46.4, 27.4, 5.5, 2.7, 2.5, 3.4, 3.5, 3.9, 2.3, 2.4]}, "2020": {"counts": [987, 813, 97, 71, 74, 71, 202, 38, 100, 66], "pcts": [39.2, 32.3, 3.9, 2.8, 2.9, 2.8, 8.0, 1.5, 4.0, 2.6]}, "2021": {"counts": [1579, 953, 140, 127, 127, 145, 151, 102, 113, 93], "pcts": [44.7, 27.0, 4.0, 3.6, 3.6, 4.1, 4.3, 2.9, 3.2, 2.6]}, "all": {"counts": [11371, 8807, 1443, 1084, 936, 925, 912, 900, 809, 704], "pcts": [40.8, 31.6, 5.2, 3.9, 3.4, 3.3, 3.3, 3.2, 2.9, 2.5]}}, "payer_cls": {"ambulatory": {"counts": [4432, 4453, 768, 518, 434, 364, 509, 411, 335, 313], "pcts": [35.4, 35.5, 6.1, 4.1, 3.5, 2.9, 4.1, 3.3, 2.7, 2.5]}, "emergency": {"counts": [1411, 555, 98, 49, 36, 33, 37, 31, 37, 35], "pcts": [60.8, 23.9, 4.2, 2.1, 1.6, 1.4, 1.6, 1.3, 1.6, 1.5]}, "inpatient": {"counts": [495, 332, 30, 63, 42, 32, 55, 49, 23, 14], "pcts": [43.6, 29.3, 2.6, 5.6, 3.7, 2.8, 4.8, 4.3, 2.0, 1.2]}, "outpatient": {"counts": [2251, 1631, 471, 321, 310, 339, 124, 305, 287, 261], "pcts": [35.7, 25.9, 7.5, 5.1, 4.9, 5.4, 2.0, 4.8, 4.6, 4.1]}, "urgentcare": {"counts": [1796, 1499, 20, 44, 39, 65, 122, 38, 28, 15], "pcts": [49.0, 40.9, 0.5, 1.2, 1.1, 1.8, 3.3, 1.0, 0.8, 0.4]}, "wellness": {"counts": [986, 337, 56, 89, 75, 92, 65, 66, 99, 66], "pcts": [51.1, 17.5, 2.9, 4.6, 3.9, 4.8, 3.4, 3.4, 5.1, 3.4]}, "all": {"counts": [11371, 8807, 1443, 1084, 936, 925, 912, 900, 809, 704], "pcts": [40.8, 31.6, 5.2, 3.9, 3.4, 3.3, 3.3, 3.2, 2.9, 2.5]}}, "demo_yr": {"2011": {"F": [0, 59, 58, 56, 403], "M": [0, 16, 28, 99, 617]}, "2012": {"F": [0, 226, 165, 129, 535], "M": [0, 34, 52, 109, 856]}, "2013": {"F": [0, 249, 169, 164, 731], "M": [0, 46, 36, 177, 923]}, "2014": {"F": [0, 326, 352, 295, 875], "M": [0, 149, 157, 342, 1389]}, "2015": {"F": [0, 233, 198, 192, 619], "M": [0, 29, 48, 140, 1010]}, "2016": {"F": [0, 122, 232, 161, 769], "M": [0, 51, 56, 105, 955]}, "2017": {"F": [0, 181, 228, 202, 807], "M": [0, 26, 48, 102, 766]}, "2018": {"F": [0, 135, 214, 176, 815], "M": [0, 33, 98, 88, 733]}, "2019": {"F": [0, 97, 221, 171, 826], "M": [0, 21, 58, 78, 756]}, "2020": {"F": [0, 102, 247, 142, 975], "M": [0, 19, 57, 99, 878]}, "2021": {"F": [0, 101, 302, 234, 1308], "M": [0, 57, 132, 218, 1178]}, "all": {"F": [0, 1843, 2397, 1933, 8751], "M": [0, 481, 774, 1566, 10146]}}, "demo_cls": {"ambulatory": {"F": [0, 1199, 962, 694, 4789], "M": [0, 238, 365, 835, 3455]}, "emergency": {"F": [0, 115, 126, 67, 723], "M": [0, 24, 43, 64, 1160]}, "inpatient": {"F": [0, 9, 100, 143, 458], "M": [0, 3, 8, 108, 306]}, "outpatient": {"F": [0, 483, 1087, 578, 1550], "M": [0, 151, 202, 323, 1926]}, "urgentcare": {"F": [0, 11, 23, 288, 842], "M": [0, 11, 18, 55, 2418]}, "wellness": {"F": [0, 26, 99, 163, 389], "M": [0, 54, 138, 181, 881]}}, "pcat_yr": {"2011": [1282145.0, 65088.0, 112421.0, 905902.0, 181583.0, 122416.0, 20885.0, 39465.0], "2012": [6643766.0, 772967.0, 574587.0, 660354.0, 395548.0, 221869.0, 139063.0, 45099.0], "2013": [7523077.0, 1003356.0, 605131.0, 633650.0, 581497.0, 230788.0, 160871.0, 45239.0], "2014": [9241194.0, 957259.0, 715990.0, 667229.0, 439395.0, 228290.0, 143688.0, 90560.0], "2015": [7130162.0, 1107835.0, 655644.0, 796899.0, 451248.0, 238700.0, 133460.0, 43941.0], "2016": [6119726.0, 691208.0, 567777.0, 527906.0, 365838.0, 340731.0, 184009.0, 0.0], "2017": [7126372.0, 987483.0, 611319.0, 548380.0, 473735.0, 242999.0, 136607.0, 49613.0], "2018": [6720360.0, 926622.0, 547145.0, 309331.0, 326882.0, 233489.0, 116278.0, 17750.0], "2019": [7445272.0, 792983.0, 532118.0, 106004.0, 302652.0, 235697.0, 136256.0, 16049.0], "2020": [8172580.0, 1018163.0, 582397.0, 0.0, 457555.0, 857129.0, 117965.0, 26023.0], "2021": [7062411.0, 691776.0, 541178.0, 89278.0, 434639.0, 566230.0, 90267.0, 0.0], "all": [75024272.0, 9084509.0, 6082259.0, 5254836.0, 4418795.0, 3548309.0, 1381787.0, 373739.0]}, "cov_yr": {"2011": [854, 330], "2012": [3099, 1462], "2013": [3142, 1782], "2014": [4393, 1886], "2015": [3034, 1632], "2016": [2697, 1416], "2017": [3277, 1327], "2018": [2538, 1447], "2019": [2983, 1281], "2020": [3229, 1239], "2021": [3186, 1201], "all": [32599, 15102]}, "rev_yr": {"ambulatory": {"rev": [1492329.0, 3606347.0, 3560141.0, 6007584.0, 3884696.0, 2668967.0, 3603447.0, 2821004.0, 2668413.0, 2808842.0, 2949623.0], "cov": [688780.0, 1112441.0, 1383109.0, 2066079.0, 1383182.0, 846316.0, 1609549.0, 842376.0, 1107691.0, 702541.0, 1068399.0]}, "emergency": {"rev": [246461.0, 933879.0, 835851.0, 973546.0, 895202.0, 1012724.0, 848416.0, 1159559.0, 1190664.0, 1518076.0, 1010922.0], "cov": [118106.0, 248400.0, 367173.0, 267080.0, 373374.0, 294180.0, 330195.0, 244127.0, 506776.0, 248462.0, 191251.0]}, "inpatient": {"rev": [1053893.0, 840095.0, 839531.0, 995517.0, 1059969.0, 835042.0, 874415.0, 514582.0, 390269.0, 1011715.0, 391135.0], "cov": [548235.0, 462942.0, 431705.0, 271160.0, 324316.0, 293593.0, 201383.0, 47838.0, 123944.0, 718905.0, 262627.0]}, "outpatient": {"rev": [575542.0, 1026208.0, 1350121.0, 1374770.0, 1245864.0, 1095219.0, 1262620.0, 1292906.0, 1273620.0, 1745050.0, 1712068.0], "cov": [237173.0, 366298.0, 391140.0, 325696.0, 336235.0, 177216.0, 250359.0, 282505.0, 422163.0, 508191.0, 449571.0]}, "urgentcare": {"rev": [267624.0, 1893833.0, 2827095.0, 2022983.0, 2333604.0, 1954764.0, 2287122.0, 2200202.0, 2601061.0, 2445126.0, 2356775.0], "cov": [72612.0, 216935.0, 482033.0, 282638.0, 196832.0, 106825.0, 193212.0, 199718.0, 301992.0, 460254.0, 504702.0]}, "wellness": {"rev": [770088.0, 757953.0, 692534.0, 637262.0, 705318.0, 819985.0, 720875.0, 758565.0, 791312.0, 765269.0, 756709.0], "cov": [425234.0, 466338.0, 367828.0, 339075.0, 358477.0, 434815.0, 405302.0, 398269.0, 399283.0, 399010.0, 390984.0]}, "all": {"rev": [4405937.0, 9058314.0, 10105273.0, 12011662.0, 10124653.0, 8386701.0, 9596894.0, 8746818.0, 8915339.0, 10294078.0, 9177232.0], "cov": [2090138.0, 2873355.0, 3422988.0, 3551728.0, 2972416.0, 2152946.0, 2990000.0, 2014832.0, 2861849.0, 3037361.0, 2867533.0]}}, "payer_costs": {"all": {"billed": [24647229.0, 49259290.0, 8954131.0, 3543921.0, 2589956.0, 3002166.0, 1546926.0, 2563508.0, 2424533.0, 2982715.0], "cov": [19215691.0, 0.0, 8417974.0, 1954.0, 1780.0, 2074496.0, 1380706.0, 3937.0, 968.0, 0.0], "avg": [2168.0, 5593.0, 6205.0, 3269.0, 2767.0, 3246.0, 1696.0, 2848.0, 2997.0, 4237.0]}, "2011": {"billed": [2094909.0, 1350237.0, 288082.0, 51096.0, 101051.0, 158318.0, 63626.0, 144887.0, 105705.0, 48026.0], "cov": [1648076.0, 0.0, 270082.0, 1291.0, 0.0, 110854.0, 57049.0, 2787.0, 0.0, 0.0], "avg": [3734.0, 3185.0, 5144.0, 798.0, 4593.0, 5277.0, 2121.0, 1610.0, 3915.0, 1501.0]}, "2012": {"billed": [2275113.0, 4547906.0, 618360.0, 152418.0, 110962.0, 559991.0, 116394.0, 176246.0, 264308.0, 236616.0], "cov": [1784821.0, 0.0, 581037.0, 663.0, 0.0, 401834.0, 104981.0, 0.0, 19.0, 0.0], "avg": [2865.0, 6040.0, 5889.0, 1694.0, 2466.0, 5544.0, 2116.0, 3204.0, 4987.0, 4302.0]}, "2013": {"billed": [2533811.0, 4788389.0, 1246286.0, 176957.0, 219818.0, 306752.0, 57098.0, 245796.0, 258131.0, 272237.0], "cov": [1988917.0, 0.0, 1173563.0, 0.0, 0.0, 211141.0, 49368.0, 0.0, 0.0, 0.0], "avg": [2653.0, 5193.0, 7599.0, 2058.0, 4227.0, 3298.0, 1142.0, 5016.0, 3688.0, 5041.0]}, "2014": {"billed": [2552335.0, 5124829.0, 1398246.0, 850194.0, 688673.0, 200101.0, 136887.0, 736200.0, 86891.0, 237307.0], "cov": [1978940.0, 0.0, 1314254.0, 0.0, 1447.0, 134544.0, 121240.0, 661.0, 642.0, 0.0], "avg": [1705.0, 4555.0, 6327.0, 3882.0, 3034.0, 1888.0, 1669.0, 3775.0, 860.0, 2119.0]}, "2015": {"billed": [2056682.0, 5371954.0, 1160591.0, 444811.0, 154726.0, 276272.0, 96732.0, 210154.0, 155863.0, 196868.0], "cov": [1601371.0, 0.0, 1092689.0, 0.0, 0.0, 190733.0, 87624.0, 0.0, 0.0, 0.0], "avg": [2071.0, 6441.0, 7077.0, 3936.0, 2009.0, 3212.0, 2150.0, 4121.0, 3181.0, 3454.0]}, "2016": {"billed": [1729784.0, 4606503.0, 479096.0, 323642.0, 155918.0, 305816.0, 164046.0, 187313.0, 305509.0, 129074.0], "cov": [1339696.0, 0.0, 449162.0, 0.0, 175.0, 214804.0, 149110.0, 0.0, 0.0, 0.0], "avg": [1751.0, 5537.0, 4607.0, 3763.0, 1901.0, 3729.0, 2187.0, 2927.0, 3726.0, 2305.0]}, "2017": {"billed": [1742309.0, 4619073.0, 1315353.0, 426845.0, 215348.0, 456132.0, 88334.0, 125624.0, 242431.0, 365446.0], "cov": [1348411.0, 0.0, 1240127.0, 0.0, 0.0, 322938.0, 78524.0, 0.0, 0.0, 0.0], "avg": [1718.0, 6733.0, 8378.0, 4640.0, 3263.0, 5702.0, 1732.0, 1795.0, 3069.0, 5622.0]}, "2018": {"billed": [1642047.0, 5186738.0, 560681.0, 206070.0, 145854.0, 152028.0, 124175.0, 212637.0, 234216.0, 282372.0], "cov": [1275751.0, 0.0, 526403.0, 0.0, 158.0, 100907.0, 111213.0, 381.0, 19.0, 0.0], "avg": [1887.0, 6557.0, 5289.0, 2902.0, 1430.0, 3041.0, 1800.0, 2262.0, 2856.0, 4954.0]}, "2019": {"billed": [2283921.0, 4360008.0, 944280.0, 173599.0, 265926.0, 113134.0, 136882.0, 281550.0, 190759.0, 165281.0], "cov": [1779776.0, 0.0, 889613.0, 0.0, 0.0, 69667.0, 122685.0, 109.0, 0.0, 0.0], "avg": [2209.0, 7148.0, 7740.0, 2846.0, 4835.0, 1508.0, 1733.0, 3236.0, 3740.0, 3061.0]}, "2020": {"billed": [2839725.0, 4531252.0, 332260.0, 338153.0, 268432.0, 133541.0, 457707.0, 126556.0, 391360.0, 875093.0], "cov": [2224496.0, 0.0, 310000.0, 0.0, 0.0, 87033.0, 415670.0, 0.0, 162.0, 0.0], "avg": [2877.0, 5573.0, 3425.0, 4763.0, 3627.0, 1881.0, 2266.0, 3330.0, 3914.0, 13259.0]}, "2021": {"billed": [2656160.0, 4448238.0, 559667.0, 398790.0, 245789.0, 305541.0, 100506.0, 115754.0, 189190.0, 157596.0], "cov": [2057605.0, 0.0, 522774.0, 0.0, 0.0, 205939.0, 81088.0, 0.0, 127.0, 0.0], "avg": [1682.0, 4668.0, 3998.0, 3140.0, 1935.0, 2107.0, 666.0, 1135.0, 1674.0, 1695.0]}}};
+
+const YEARS   = D.years;
+const CLASSES = D.classes;
+const PAYERS  = D.payers;
+const PCATS   = D.pcats;
+const AGE_LBL = D.age_labels;
+
+const PAL_PAYER = ['#4F7BEF','#EF4444','#10B981','#F59E0B','#8B5CF6',
+                   '#14B8A6','#F97316','#06B6D4','#84CC16','#6366F1'];
+const PAL_CLASS = ['#4F7BEF','#EF4444','#10B981','#14B8A6','#F59E0B','#8B5CF6'];
+const PAL_PCAT  = ['#64748B','#EF4444','#10B981','#8B5CF6','#14B8A6','#F97316','#4F7BEF','#F59E0B'];
+const GRID = {color:'rgba(0,0,0,.05)'};
+const TICK = {color:'#64748B',font:{size:11}};
+const LEG  = {labels:{font:{size:11},boxWidth:11,padding:10}};
+
+const $   = id => document.getElementById(id);
+const fmtN = n => (n==null||isNaN(n)) ? '—' : Math.round(n).toLocaleString();
+const fmtM = n => {
+  if(n==null||isNaN(n)) return '—';
+  if(n>=1e6) return '$'+(n/1e6).toFixed(1)+'M';
+  if(n>=1e3) return '$'+(n/1e3).toFixed(0)+'K';
+  return '$'+Math.round(n).toLocaleString();
+};
+const fmtC = n => (n==null||isNaN(n)) ? '—' : '$'+Math.round(n).toLocaleString();
+const fmtP = n => (n==null||isNaN(n)) ? '—' : n.toFixed(1)+'%';
+const round1 = v => Math.round(v*10)/10;
+
+// ── UNIFIED FILTER READERS ──────────────────────────────────────────────────
+const sy  = () => $('sYear').value;
+const sc  = () => $('sClass').value;
+const sp  = () => $('sPayer').value;
+const scv = () => $('sCov').value;
+
+function resetFilters() {
+  $('sYear').value='all'; $('sClass').value='all';
+  $('sPayer').value='all'; $('sCov').value='all';
+  updateActive();
+}
+
+// ── KPI BLOCK ───────────────────────────────────────────────────────────────
+function kpiBlock(y, cl) {
+  if(cl !== 'all') {
+    const base = D.kpi_cls[cl] || {};
+    if(y === 'all') return base;
+    const yi = YEARS.indexOf(parseInt(y));
+    if(yi < 0) return base;
+    const adm   = D.adm_trend[cl]  ? D.adm_trend[cl].adm[yi]   : 0;
+    const readm = D.adm_trend[cl]  ? D.adm_trend[cl].readm[yi]  : 0;
+    const los   = D.los_trend[cl]  ? D.los_trend[cl][yi]        : 0;
+    const cost  = D.cost_trend[cl] ? D.cost_trend[cl][yi]       : 0;
+    const yrD   = D.kpi_yr[y] || {};
+    return {adm, readm, rr: adm ? round1(readm/adm*100) : 0,
+            los, cost, rev: cost*adm,
+            cov: yrD.cov||0, ins: yrD.ins||0, unins: yrD.unins||0};
+  }
+  if(y === 'all') return {adm:27891,readm:17346,rr:62.2,los:0.30,cost:3640,
+                          rev:101514376,cov:30.6,ins:19084,unins:8807};
+  return D.kpi_yr[y] || {};
+}
+
+function prevBlock(y) {
+  const n = YEARS.length;
+  if(y === 'all') return D.kpi_yr[String(YEARS[n-2])] || {};
+  const yi = YEARS.indexOf(parseInt(y));
+  return yi > 0 ? D.kpi_yr[String(YEARS[yi-1])] || {} : null;
+}
+
+function tr(curr, prev, inv=false) {
+  if(prev==null || !prev || prev===0 || curr==null) return '';
+  const pct = (curr-prev)/Math.abs(prev)*100;
+  if(Math.abs(pct) < 0.4) return '';
+  const up = pct > 0;
+  const good = inv ? !up : up;
+  return `<span class="${good?'tr-up':'tr-dn'}">${up?'↑':'↓'}${Math.abs(pct).toFixed(1)}%</span>`;
+}
+
+// ── CHART REGISTRY ──────────────────────────────────────────────────────────
+const CH = {};
+function mkChart(id, cfg) {
+  if(CH[id]) CH[id].destroy();
+  CH[id] = new Chart($(id).getContext('2d'), cfg);
+  return CH[id];
+}
+function updateDataset(id, idx, data, colors) {
+  const c=CH[id]; if(!c) return;
+  c.data.datasets[idx].data = data;
+  if(colors !== undefined) c.data.datasets[idx].backgroundColor = colors;
+  c.update('active');
+}
+const barColors = yk => YEARS.map(y => (yk==='all'||String(y)===yk)?'#4F7BEF':'rgba(148,163,184,.3)');
+
+// ── TAB MANAGEMENT ──────────────────────────────────────────────────────────
+let activeTab = 'exec';
+const INIT = {};
+const TAB_TITLES = {exec:'Executive Summary',ops:'Operations',fin:'Finance',ins:'Insurance'};
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  $(id).classList.add('active');
+  el.classList.add('active');
+  activeTab = id;
+  $('pageTitle').textContent = TAB_TITLES[id];
+  if(!INIT[id]) { initTab(id); INIT[id]=true; }
+  else updateActive();
+}
+
+function updateActive() {
+  updateFilterBadge();
+  if(activeTab==='exec') updateExec();
+  else if(activeTab==='ops')  updateOps();
+  else if(activeTab==='fin')  updateFin();
+  else if(activeTab==='ins')  updateIns();
+}
+
+function initTab(id) {
+  if(id==='exec') initExec();
+  else if(id==='ops') initOps();
+  else if(id==='fin') initFin();
+  else if(id==='ins') initIns();
+}
+
+function updateFilterBadge() {
+  const y=sy(), cl=sc(), p=sp(), cv=scv();
+  const parts=[];
+  if(y!=='all') parts.push(y);
+  if(cl!=='all') parts.push(cl);
+  if(p!=='all') parts.push(p);
+  if(cv!=='all') parts.push(cv);
+  const el=$('filterBadge');
+  if(parts.length){el.textContent=parts.join(' · ');el.style.display='inline-flex';}
+  else el.style.display='none';
+}
+
+// ── INSIGHTS HELPER ─────────────────────────────────────────────────────────
+function setIns(id, icon, lbl, txt, accent) {
+  const el=$(id); if(!el) return;
+  el.style.borderLeftColor = accent||'var(--acc)';
+  el.innerHTML = `<div class="ins-icon">${icon}</div>`+
+    `<div><div class="ins-lbl">${lbl}</div><div class="ins-txt">${txt}</div></div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TAB 1 — EXECUTIVE SUMMARY
+// ════════════════════════════════════════════════════════════════════════════
+function initExec() {
+  mkChart('eAdmChart',{type:'line',
+    data:{labels:YEARS, datasets:[
+      {label:'Admissions', data:D.adm_trend['all'].adm,
+       borderColor:'#4F7BEF',backgroundColor:'rgba(79,123,239,.08)',
+       fill:true,tension:.35,pointRadius:3,pointHoverRadius:6},
+      {label:'Readmissions', data:D.adm_trend['all'].readm,
+       borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.05)',
+       fill:true,tension:.35,pointRadius:3,borderDash:[5,3]}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{mode:'index',intersect:false}},
+      scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>v.toLocaleString()}}}}
+  });
+  mkChart('eLosChart',{type:'bar',
+    data:{labels:YEARS, datasets:[
+      {label:'Avg LOS (days)',data:D.los_trend['all'],
+       backgroundColor:barColors('all'),borderRadius:5,borderSkipped:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toFixed(2)} days`}}},
+      scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'d'}}}}
+  });
+  mkChart('eCovChart',{type:'doughnut',
+    data:{labels:['Covered','Not Covered'],
+      datasets:[{data:[30.6,69.4],backgroundColor:['#4F7BEF','#E2E8F0'],
+       borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{legend:{...LEG,position:'right'},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw.toFixed(1)}%`}}}}
+  });
+  mkChart('eAgeChart',{type:'bar',
+    data:{labels:AGE_LBL,
+      datasets:[{label:'Encounters',
+        data:AGE_LBL.map((_,i)=>(D.demo_yr['all'].F[i]||0)+(D.demo_yr['all'].M[i]||0)),
+        backgroundColor:'rgba(139,92,246,.75)',borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toLocaleString()} encounters`}}},
+      scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v.toLocaleString()}},y:{grid:{display:false},ticks:TICK}}}
+  });
+  updateExec();
+}
+
+function updateExec() {
+  const y=sy(), cl=sc();
+  const k=kpiBlock(y,cl), p=prevBlock(y);
+
+  $('e-adm').textContent   = fmtN(k.adm);
+  $('e-adm-tr').innerHTML  = tr(k.adm, p?.adm);
+  $('e-adm-sub').textContent = y==='all'?'All encounters':y+' encounters';
+  $('e-readm').textContent = fmtN(k.readm);
+  $('e-readm-tr').innerHTML= tr(k.readm, p?.readm, true);
+  $('e-readm-sub').textContent = fmtP(k.rr)+' rate';
+  $('e-los').textContent   = (k.los||0).toFixed(2);
+  $('e-los-tr').innerHTML  = tr(k.los, p?.los, true);
+  $('e-los-sub').textContent = 'days'+(cl!=='all'?' — '+cl:'');
+  $('e-cost').textContent  = fmtC(k.cost);
+  $('e-cost-tr').innerHTML = tr(k.cost, p?.cost, true);
+  $('e-cost-sub').textContent = 'per visit';
+  $('e-cov').textContent   = fmtP(k.cov);
+  $('e-cov-tr').innerHTML  = tr(k.cov, p?.cov);
+  $('e-cov-sub').textContent = fmtN(k.ins)+' insured · '+fmtN(k.unins)+' uninsured';
+
+  // Admissions chart
+  const aS = D.adm_trend[cl!=='all'?cl:'all'];
+  CH.eAdmChart.data.datasets[0].data = aS.adm;
+  CH.eAdmChart.data.datasets[1].data = aS.readm;
+  CH.eAdmChart.update('active');
+
+  // LOS chart
+  const lS = D.los_trend[cl!=='all'?cl:'all'];
+  updateDataset('eLosChart',0,lS,barColors(y));
+
+  // Coverage donut
+  const covPct = k.cov||0;
+  updateDataset('eCovChart',0,[round1(covPct),round1(100-covPct)]);
+
+  // Age chart
+  const dS = y!=='all' ? D.demo_yr[y] : (cl!=='all'&&D.demo_cls[cl]) ? D.demo_cls[cl] : D.demo_yr['all'];
+  updateDataset('eAgeChart',0,AGE_LBL.map((_,i)=>(dS.F[i]||0)+(dS.M[i]||0)));
+
+  genInsightsExec();
+}
+
+function genInsightsExec() {
+  const y=sy(), cl=sc();
+  const k=kpiBlock(y,cl);
+  const aS=D.adm_trend[cl!=='all'?cl:'all'].adm;
+  const peakI=aS.indexOf(Math.max(...aS));
+  const rrS=D.rr_trend[cl!=='all'?cl:'all'];
+  const avgRR=round1(rrS.reduce((a,b)=>a+b,0)/rrS.length);
+  const pS=y!=='all'?D.payer_yr[y]:D.payer_yr['all'];
+  const topPI=pS.pcts.indexOf(Math.max(...pS.pcts));
+  const dS=y!=='all'?D.demo_yr[y]:D.demo_yr['all'];
+  const ageTot=AGE_LBL.map((_,i)=>(dS.F[i]||0)+(dS.M[i]||0));
+  const topAI=ageTot.indexOf(Math.max(...ageTot));
+  const totPts=ageTot.reduce((a,b)=>a+b,0)||1;
+  const curRR=y!=='all'?rrS[YEARS.indexOf(parseInt(y))]:avgRR;
+  const delta=round1(curRR-avgRR);
+
+  setIns('e-ins1','📈','Peak Volume',
+    `${YEARS[peakI]} had the highest volume at ${aS[peakI].toLocaleString()} encounters`+(cl!=='all'?' ('+cl+')':'')+'.','var(--acc)');
+  setIns('e-ins2','🔄','Readmission Rate',
+    `${y==='all'?'11-yr avg':'Selected'}: ${fmtP(curRR)} — ${Math.abs(delta).toFixed(1)}pp ${delta>=0?'above':'below'} avg of ${fmtP(avgRR)}.`,
+    delta>5?'var(--red)':delta<-5?'var(--grn)':'var(--amb)');
+  setIns('e-ins3','🏥','Dominant Payer',
+    `${PAYERS[topPI]} leads at ${pS.pcts[topPI]}% (${pS.counts[topPI].toLocaleString()} visits). Uninsured: ${pS.pcts[PAYERS.indexOf('NO_INSURANCE')]}%.`,
+    'var(--pur)');
+  setIns('e-ins4','👤','Top Age Group',
+    `${AGE_LBL[topAI]} = ${(ageTot[topAI]/totPts*100).toFixed(1)}% of encounters (${ageTot[topAI].toLocaleString()} visits).`,
+    'var(--grn)');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TAB 2 — OPERATIONS
+// ════════════════════════════════════════════════════════════════════════════
+function initOps() {
+  mkChart('oLosChart',{type:'bar',
+    data:{labels:CLASSES, datasets:[
+      {label:'Avg LOS (days)',
+       data:CLASSES.map(c=>{const a=D.los_trend[c]||[];const p=a.filter(v=>v>0);return p.length?p.reduce((x,y)=>x+y,0)/p.length:0;}),
+       backgroundColor:PAL_CLASS,borderRadius:5,borderSkipped:false}
+    ]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toFixed(2)} days`}}},
+      scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'d'}},y:{grid:{display:false},ticks:TICK}}}
+  });
+  mkChart('oRrChart',{type:'line',
+    data:{labels:YEARS, datasets:[
+      {label:'Readmission Rate (%)',data:D.rr_trend['all'],
+       borderColor:'#EF4444',backgroundColor:'rgba(239,68,68,.07)',
+       fill:true,tension:.35,pointRadius:3,pointHoverRadius:6}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG},
+      scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,min:30,max:85,ticks:{...TICK,callback:v=>v+'%'}}}}
+  });
+  mkChart('oAdmChart',{type:'bar',
+    data:{labels:YEARS, datasets:[
+      {label:'Admissions',data:D.adm_trend['all'].adm,
+       backgroundColor:'rgba(79,123,239,.7)',borderRadius:4,stack:'s'},
+      {label:'Readmissions',data:D.adm_trend['all'].readm,
+       backgroundColor:'rgba(245,158,11,.7)',borderRadius:4,stack:'s'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{mode:'index',intersect:false}},
+      scales:{x:{stacked:true,grid:GRID,ticks:TICK},y:{stacked:true,grid:GRID,ticks:TICK}}}
+  });
+  mkChart('oJourneyChart',{type:'doughnut',
+    data:{labels:CLASSES,
+      datasets:[{data:CLASSES.map(c=>D.kpi_cls[c]?D.kpi_cls[c].adm:0),
+       backgroundColor:PAL_CLASS,borderWidth:2,borderColor:'#fff',hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{...LEG,position:'right'},
+        tooltip:{callbacks:{label:ctx=>{const n=ctx.raw,tot=27891;
+          return ` ${ctx.label}: ${n.toLocaleString()} (${(n/tot*100).toFixed(1)}%)`;
+        }}}}}
+  });
+  updateOps();
+}
+
+function updateOps() {
+  const y=sy(), cl=sc();
+  const k=kpiBlock(y,cl), p=prevBlock(y);
+
+  $('o-los').textContent    = (k.los||0).toFixed(2);
+  $('o-los-tr').innerHTML   = tr(k.los, p?.los, true);
+  $('o-los-sub').textContent= 'days'+(cl!=='all'?' — '+cl:'');
+  $('o-rr').textContent     = fmtP(k.rr);
+  $('o-rr-tr').innerHTML    = tr(k.rr, p?.rr, true);
+  $('o-rr-sub').textContent = fmtN(k.readm)+' events';
+  $('o-adm').textContent    = fmtN(k.adm);
+  $('o-adm-tr').innerHTML   = tr(k.adm, p?.adm);
+  $('o-adm-sub').textContent= y==='all'?'all years':y;
+
+  // LOS by class
+  const losData=CLASSES.map(c=>{
+    const a=D.los_trend[c]||[];
+    if(y==='all'){const pos=a.filter(v=>v>0);return pos.length?pos.reduce((x,v)=>x+v,0)/pos.length:0;}
+    const yi=YEARS.indexOf(parseInt(y)); return yi>=0?a[yi]:0;
+  });
+  updateDataset('oLosChart',0,losData,PAL_CLASS);
+
+  // RR trend
+  updateDataset('oRrChart',0,D.rr_trend[cl!=='all'?cl:'all']||D.rr_trend['all']);
+
+  // Adm trend
+  const aS=D.adm_trend[cl!=='all'?cl:'all'];
+  CH.oAdmChart.data.datasets[0].data=aS.adm;
+  CH.oAdmChart.data.datasets[1].data=aS.readm;
+  CH.oAdmChart.update('active');
+
+  // Journey donut
+  const jData=CLASSES.map(c=>{
+    const a=D.adm_trend[c]||{adm:[]};
+    if(y==='all') return D.kpi_cls[c]?D.kpi_cls[c].adm:0;
+    const yi=YEARS.indexOf(parseInt(y)); return yi>=0?a.adm[yi]:0;
+  });
+  updateDataset('oJourneyChart',0,jData,PAL_CLASS);
+
+  genInsightsOps();
+}
+
+function genInsightsOps() {
+  const y=sy(), cl=sc();
+  const rrByClass=CLASSES.map(c=>{const a=D.rr_trend[c]||[];const pos=a.filter(v=>v>0);return pos.length?pos.reduce((x,v)=>x+v,0)/pos.length:0;});
+  const topRRI=rrByClass.indexOf(Math.max(...rrByClass));
+  const lS=D.los_trend[cl!=='all'?cl:'all'];
+  const pos=lS.filter(v=>v>0);
+  const maxLOS=Math.max(...pos),minLOS=Math.min(...pos);
+  const maxYr=YEARS[lS.indexOf(maxLOS)],minYr=YEARS[lS.indexOf(minLOS)];
+  const aS=D.adm_trend[cl!=='all'?cl:'all'].adm;
+  const lastI=y!=='all'?YEARS.indexOf(parseInt(y)):aS.length-1;
+  const prevI=Math.max(lastI-1,0);
+  const yoyChg=aS[lastI]-aS[prevI];
+  const inpLOS=D.kpi_cls['inpatient']?D.kpi_cls['inpatient'].los:0;
+  const ambLOS=D.kpi_cls['ambulatory']?D.kpi_cls['ambulatory'].los:0.01;
+
+  setIns('o-ins1','⚠️','Highest Readmission Class',
+    `${CLASSES[topRRI]} has avg readmission rate of ${rrByClass[topRRI].toFixed(1)}% — highest of all visit classes.`,'var(--red)');
+  setIns('o-ins2','🛏️','LOS Range',
+    `${cl!=='all'?cl:'Overall'} LOS peaked at ${maxLOS.toFixed(2)}d (${maxYr}), lowest at ${minLOS.toFixed(2)}d (${minYr}).`,'var(--tel)');
+  setIns('o-ins3','📊','Volume Change',
+    `${YEARS[lastI]} vs ${YEARS[prevI]}: ${yoyChg>=0?'↑':'↓'}${Math.abs(yoyChg).toLocaleString()} (${yoyChg>=0?'+':''}${aS[prevI]?round1(yoyChg/aS[prevI]*100):0}%).`,
+    yoyChg>=0?'var(--grn)':'var(--red)');
+  setIns('o-ins4','⚖️','LOS Gap',
+    `Inpatient (${inpLOS.toFixed(2)}d) is ${(inpLOS/ambLOS).toFixed(0)}× longer than ambulatory (${ambLOS.toFixed(2)}d).`,'var(--pur)');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TAB 3 — FINANCE
+// ════════════════════════════════════════════════════════════════════════════
+function initFin() {
+  mkChart('fCostChart',{type:'bar',
+    data:{labels:YEARS,datasets:[
+      {label:'Avg Cost/Visit ($)',data:D.cost_trend['all'],
+       backgroundColor:barColors('all'),borderRadius:5,borderSkipped:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` $${Math.round(ctx.raw).toLocaleString()}`}}},
+      scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>'$'+v.toLocaleString()}}}}
+  });
+  mkChart('fPcatChart',{type:'doughnut',
+    data:{labels:PCATS,datasets:[
+      {data:D.pcat_yr['all'],backgroundColor:PAL_PCAT,borderWidth:2,borderColor:'#fff',hoverOffset:8}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{...LEG,position:'right'},
+        tooltip:{callbacks:{label:ctx=>{const tot=D.pcat_yr['all'].reduce((a,b)=>a+b,0);
+          return ` ${ctx.label}: ${fmtM(ctx.raw)} (${(ctx.raw/tot*100).toFixed(1)}%)`;
+        }}}}}
+  });
+  mkChart('fRevChart',{type:'line',
+    data:{labels:YEARS,datasets:[
+      {label:'Total Revenue',data:D.rev_yr['all'].rev,
+       borderColor:'#8B5CF6',backgroundColor:'rgba(139,92,246,.07)',
+       fill:true,tension:.35,pointRadius:3,yAxisID:'y'},
+      {label:'Payer Coverage',data:D.rev_yr['all'].cov,
+       borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.07)',
+       fill:true,tension:.35,pointRadius:3,borderDash:[5,3],yAxisID:'y'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{mode:'index',intersect:false,
+        callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtM(ctx.raw)}`}}},
+      scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:fmtM}}}}
+  });
+  const pc=D.payer_costs['all'];
+  mkChart('fPayerChart',{type:'bar',
+    data:{labels:PAYERS,datasets:[
+      {label:'Total Billed',data:pc.billed,backgroundColor:'rgba(139,92,246,.65)',borderRadius:4},
+      {label:'Payer Coverage',data:pc.cov,backgroundColor:'rgba(16,185,129,.75)',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtM(ctx.raw)}`}}},
+      scales:{x:{grid:GRID,ticks:{...TICK,font:{size:9},maxRotation:28}},
+              y:{grid:GRID,ticks:{...TICK,callback:fmtM}}}}
+  });
+  updateFin();
+}
+
+function updateFin() {
+  const y=sy(), p=sp();
+  const kyr=y!=='all'?D.kpi_yr[y]:null;
+  const prev=prevBlock(y);
+  const adm=kyr?kyr.adm:27891;
+  const cr=kyr?kyr.cov:30.6;
+
+  let costVal,revVal;
+  if(y!=='all'&&p!=='all'){
+    const pi=PAYERS.indexOf(p);
+    const pc=D.payer_costs[y];
+    costVal=Array.isArray(pc?.avg)?pc.avg[pi]:0;
+    revVal =Array.isArray(pc?.billed)?pc.billed[pi]:0;
+  } else if(y!=='all'){
+    costVal=kyr.cost; revVal=kyr.rev;
+  } else if(p!=='all'){
+    const pi=PAYERS.indexOf(p);
+    costVal=D.payer_costs['all'].avg[pi]; revVal=D.payer_costs['all'].billed[pi];
+  } else { costVal=3640; revVal=101514376; }
+
+  $('f-cost').textContent    = fmtC(costVal);
+  $('f-cost-tr').innerHTML   = tr(costVal,prev?.cost,true);
+  $('f-cost-sub').textContent= 'per visit'+(p!=='all'?' — '+p:'');
+  $('f-rev').textContent     = fmtM(revVal);
+  $('f-rev-tr').innerHTML    = tr(revVal,prev?.rev);
+  $('f-rev-sub').textContent = y==='all'?'all years':y;
+  $('f-cov').textContent     = fmtP(cr);
+  $('f-cov-tr').innerHTML    = tr(cr,prev?.cov);
+  $('f-cov-sub').textContent = 'of claims covered';
+  $('f-gap').textContent     = fmtP(round1(100-cr));
+  $('f-gap-sub').textContent = 'patient out-of-pocket';
+
+  // Cost by year
+  let costArr;
+  if(p!=='all'){
+    const pi=PAYERS.indexOf(p);
+    costArr=YEARS.map((_,i)=>{const pc=D.payer_costs[String(YEARS[i])];return Array.isArray(pc?.avg)?pc.avg[pi]:0;});
+  } else costArr=D.cost_trend['all'];
+  updateDataset('fCostChart',0,costArr,barColors(y));
+
+  // Proc cat donut
+  const pcatD=D.pcat_yr[y!=='all'?y:'all'];
+  updateDataset('fPcatChart',0,pcatD,PAL_PCAT);
+  CH.fPcatChart.options.plugins.tooltip.callbacks.label=ctx=>{
+    const tot=pcatD.reduce((a,b)=>a+b,0)||1;
+    return ` ${ctx.label}: ${fmtM(ctx.raw)} (${(ctx.raw/tot*100).toFixed(1)}%)`;
+  };
+  CH.fPcatChart.update('active');
+
+  // Revenue/cov trend
+  let revD,covD;
+  if(p!=='all'){
+    const pi=PAYERS.indexOf(p);
+    revD=YEARS.map((_,i)=>{const pc=D.payer_costs[String(YEARS[i])];return Array.isArray(pc?.billed)?pc.billed[pi]:0;});
+    covD=YEARS.map((_,i)=>{const pc=D.payer_costs[String(YEARS[i])];return Array.isArray(pc?.cov)?pc.cov[pi]:0;});
+  } else { revD=D.rev_yr['all'].rev; covD=D.rev_yr['all'].cov; }
+  CH.fRevChart.data.datasets[0].data=revD;
+  CH.fRevChart.data.datasets[1].data=covD;
+  CH.fRevChart.update('active');
+
+  // Payer cost bar
+  const pc2=y!=='all'?D.payer_costs[y]:D.payer_costs['all'];
+  CH.fPayerChart.data.datasets[0].data=PAYERS.map((_,i)=>Array.isArray(pc2?.billed)?pc2.billed[i]:0);
+  CH.fPayerChart.data.datasets[1].data=PAYERS.map((_,i)=>Array.isArray(pc2?.cov)?pc2.cov[i]:0);
+  CH.fPayerChart.update('active');
+
+  genInsightsFin();
+}
+
+function genInsightsFin() {
+  const y=sy(), p=sp();
+  const revArr=D.rev_yr['all'].rev;
+  const peakRI=revArr.indexOf(Math.max(...revArr));
+  const crArr=YEARS.map(yr=>D.kpi_yr[String(yr)].cov);
+  const avgCov=round1(crArr.reduce((a,b)=>a+b,0)/crArr.length);
+  const pcatD=D.pcat_yr['all'];
+  const topPI=pcatD.indexOf(Math.max(...pcatD));
+  const totPcat=pcatD.reduce((a,b)=>a+b,0)||1;
+  const bArr=D.payer_costs['all'].billed,cArr=D.payer_costs['all'].cov;
+  const ratios=bArr.map((b,i)=>b?round1(cArr[i]/b*100):0);
+  ratios[PAYERS.indexOf('NO_INSURANCE')]=-1;
+  const bestPI=ratios.indexOf(Math.max(...ratios));
+
+  setIns('f-ins1','💰','Peak Revenue Year',
+    `${YEARS[peakRI]} generated peak revenue of ${fmtM(revArr[peakRI])}. Latest full year: ${fmtM(revArr[revArr.length-1])}.`,'var(--pur)');
+  setIns('f-ins2','📉','Coverage Gap',
+    `Avg payer coverage ${fmtP(avgCov)} — patients bear ${fmtP(round1(100-avgCov))} OOP. Coverage trended ${crArr[crArr.length-1]>crArr[0]?'up':'down'} since 2011.`,
+    round1(100-avgCov)>65?'var(--red)':'var(--amb)');
+  setIns('f-ins3','🏷️','Top Procedure Cost',
+    `${PCATS[topPI]} is the highest-cost category at ${fmtM(pcatD[topPI])} (${(pcatD[topPI]/totPcat*100).toFixed(1)}% of total).`,'var(--amb)');
+  setIns('f-ins4','✅','Best Reimbursement Payer',
+    `${PAYERS[bestPI]} provides the highest reimbursement rate at ${fmtP(ratios[bestPI])} of billed costs.`,'var(--grn)');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TAB 4 — INSURANCE
+// ════════════════════════════════════════════════════════════════════════════
+function initIns() {
+  mkChart('iPayerChart',{type:'doughnut',
+    data:{labels:PAYERS,datasets:[
+      {data:D.payer_yr['all'].pcts,backgroundColor:PAL_PAYER,
+       borderWidth:2,borderColor:'#fff',hoverOffset:8}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{legend:{...LEG,position:'right'},
+        tooltip:{callbacks:{label:ctx=>
+          ` ${ctx.label}: ${ctx.raw}% (${D.payer_yr['all'].counts[ctx.dataIndex].toLocaleString()})`}}}}
+  });
+  mkChart('iCovBarChart',{type:'bar',
+    data:{labels:YEARS,datasets:[
+      {label:'Covered',data:YEARS.map(yr=>D.cov_yr[String(yr)][0]),
+       backgroundColor:'rgba(16,185,129,.75)',borderRadius:4,stack:'s'},
+      {label:'Not Covered',data:YEARS.map(yr=>D.cov_yr[String(yr)][1]),
+       backgroundColor:'rgba(239,68,68,.75)',borderRadius:4,stack:'s'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{mode:'index',intersect:false}},
+      scales:{x:{stacked:true,grid:GRID,ticks:TICK},y:{stacked:true,grid:GRID,ticks:TICK}}}
+  });
+  mkChart('iCovTrendChart',{type:'line',
+    data:{labels:YEARS,datasets:[
+      {label:'Coverage Rate (%)',
+       data:YEARS.map(yr=>D.kpi_yr[String(yr)]?D.kpi_yr[String(yr)].cov:0),
+       borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.08)',
+       fill:true,tension:.35,pointRadius:3,pointHoverRadius:6}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG},
+      scales:{x:{grid:GRID,ticks:TICK},
+              y:{grid:GRID,min:15,max:55,ticks:{...TICK,callback:v=>v+'%'}}}}
+  });
+  const pc=D.payer_costs['all'];
+  mkChart('iPayerCovChart',{type:'bar',
+    data:{labels:PAYERS,datasets:[
+      {label:'Total Billed',data:pc.billed,backgroundColor:'rgba(79,123,239,.65)',borderRadius:4},
+      {label:'Payer Coverage',data:pc.cov,backgroundColor:'rgba(16,185,129,.75)',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:LEG,tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtM(ctx.raw)}`}}},
+      scales:{x:{grid:GRID,ticks:{...TICK,font:{size:9},maxRotation:28}},
+              y:{grid:GRID,ticks:{...TICK,callback:fmtM}}}}
+  });
+  updateIns();
+}
+
+function updateIns() {
+  const y=sy(), p=sp(), cv=scv();
+  const kyr=y!=='all'?D.kpi_yr[y]:null;
+  const prev=prevBlock(y);
+  const covR=kyr?kyr.cov:30.6;
+  const insN=kyr?kyr.ins:19084;
+  const uinsN=kyr?kyr.unins:8807;
+  const noInsIdx=PAYERS.indexOf('NO_INSURANCE');
+
+  $('i-cr').textContent     = fmtP(covR);
+  $('i-cr-tr').innerHTML    = tr(covR,prev?.cov);
+  $('i-cr-sub').textContent = 'payer-funded portion';
+  $('i-cov').textContent    = fmtN(D.cov_yr['all'][0]);
+  $('i-cov-sub').textContent= '68.3% of procedures';
+  $('i-ucost').textContent  = '$50.2M';
+  $('i-ucost-sub').textContent= '15,102 uncovered procedures';
+  $('i-ins').textContent    = fmtN(insN);
+  $('i-ins-tr').innerHTML   = tr(insN,prev?.ins);
+  $('i-ins-sub').textContent= ((insN/(insN+uinsN)*100)||0).toFixed(1)+'% of total';
+
+  const pSrc=y!=='all'?D.payer_yr[y]:D.payer_yr['all'];
+  const topPI2=pSrc.counts.indexOf(Math.max(...pSrc.counts));
+  $('i-top').textContent    = PAYERS[topPI2];
+  $('i-top-sub').textContent= pSrc.pcts[topPI2]+'% — '+pSrc.counts[topPI2].toLocaleString()+' encounters';
+
+  // Payer mix donut
+  let pData=pSrc.pcts, pCounts=pSrc.counts;
+  if(cv==='covered'){
+    const raw=pSrc.counts.map((c,i)=>i===noInsIdx?0:c);
+    const tot=raw.reduce((a,b)=>a+b,0)||1;
+    pData=raw.map(v=>round1(v/tot*100)); pCounts=raw;
+  } else if(cv==='uncovered'){
+    const uc=pSrc.counts[noInsIdx];
+    pData=PAYERS.map((_,i)=>i===noInsIdx?100:0);
+    pCounts=PAYERS.map((_,i)=>i===noInsIdx?uc:0);
+  }
+  updateDataset('iPayerChart',0,pData,PAL_PAYER);
+  CH.iPayerChart.options.plugins.tooltip.callbacks.label=ctx=>
+    ` ${ctx.label}: ${ctx.raw}% (${pCounts[ctx.dataIndex].toLocaleString()})`;
+  CH.iPayerChart.update('active');
+
+  // Covered vs uncovered bar
+  if(p!=='all'){
+    const pi=PAYERS.indexOf(p);
+    const isCov=p!=='NO_INSURANCE';
+    CH.iCovBarChart.data.datasets[0].data=YEARS.map(yr2=>{const c=D.payer_yr[String(yr2)]?.counts[pi]||0;return isCov?c:0;});
+    CH.iCovBarChart.data.datasets[1].data=YEARS.map(yr2=>{const c=D.payer_yr[String(yr2)]?.counts[pi]||0;return !isCov?c:0;});
+  } else {
+    const covArr=YEARS.map(yr2=>D.cov_yr[String(yr2)][0]);
+    const ucArr=YEARS.map(yr2=>D.cov_yr[String(yr2)][1]);
+    CH.iCovBarChart.data.datasets[0].data=cv!=='uncovered'?covArr:covArr.map(()=>0);
+    CH.iCovBarChart.data.datasets[1].data=cv!=='covered'?ucArr:ucArr.map(()=>0);
+  }
+  if(y!=='all'){
+    const yi=YEARS.indexOf(parseInt(y));
+    CH.iCovBarChart.data.datasets[0].data=CH.iCovBarChart.data.datasets[0].data.map((v,i)=>i===yi?v:null);
+    CH.iCovBarChart.data.datasets[1].data=CH.iCovBarChart.data.datasets[1].data.map((v,i)=>i===yi?v:null);
+  }
+  CH.iCovBarChart.update('active');
+
+  // Coverage rate trend
+  let crArr2;
+  if(p!=='all'&&p!=='NO_INSURANCE'){
+    const pi=PAYERS.indexOf(p);
+    crArr2=YEARS.map(yr2=>{const b=D.payer_costs[String(yr2)]?.billed?.[pi]||0;const c=D.payer_costs[String(yr2)]?.cov?.[pi]||0;return b?round1(c/b*100):0;});
+  } else if(p==='NO_INSURANCE') crArr2=YEARS.map(()=>0);
+  else crArr2=YEARS.map(yr2=>D.kpi_yr[String(yr2)]?D.kpi_yr[String(yr2)].cov:0);
+  updateDataset('iCovTrendChart',0,crArr2);
+
+  // Payer billed vs cov bar
+  const pc2=y!=='all'?D.payer_costs[y]:D.payer_costs['all'];
+  CH.iPayerCovChart.data.datasets[0].data=PAYERS.map((_,i)=>Array.isArray(pc2?.billed)?pc2.billed[i]:0);
+  CH.iPayerCovChart.data.datasets[1].data=PAYERS.map((_,i)=>Array.isArray(pc2?.cov)?pc2.cov[i]:0);
+  CH.iPayerCovChart.update('active');
+
+  genInsightsIns();
+}
+
+function genInsightsIns() {
+  const y=sy(), p=sp();
+  const crArr=YEARS.map(yr=>D.kpi_yr[String(yr)].cov);
+  const crChg=round1(crArr[crArr.length-1]-crArr[0]);
+  const pSrc=y!=='all'?D.payer_yr[y]:D.payer_yr['all'];
+  const medIdx=PAYERS.indexOf('Medicare');
+  const noInsIdx=PAYERS.indexOf('NO_INSURANCE');
+  const totCnt=pSrc.counts.reduce((a,b)=>a+b,0)||1;
+  const uinsN=pSrc.counts[noInsIdx];
+  const k=y!=='all'?D.kpi_yr[y]:{cost:3640};
+  const covProc=D.cov_yr['all'][0],uncovProc=D.cov_yr['all'][1];
+  const totProc=covProc+uncovProc||1;
+
+  setIns('i-ins1','📈','Coverage Trend',
+    `Coverage has ${crChg>=0?'improved by':'declined by'} ${Math.abs(crChg).toFixed(1)}pp from ${fmtP(crArr[0])} (2011) to ${fmtP(crArr[crArr.length-1])} (2021).`,
+    crChg>=0?'var(--grn)':'var(--red)');
+  setIns('i-ins2','🏛️','Medicare Share',
+    `Medicare covers ${fmtP(pSrc.pcts[medIdx])} of encounters (${pSrc.counts[medIdx].toLocaleString()} visits) — largest single payer.`,'var(--acc)');
+  setIns('i-ins3','⚠️','Uninsured Burden',
+    `${uinsN.toLocaleString()} uninsured encounters (${(uinsN/totCnt*100).toFixed(1)}%) ≈ ${fmtM(uinsN*(k.cost||3640))} in estimated self-pay costs.`,'var(--amb)');
+  setIns('i-ins4','💊','Procedure Coverage',
+    `${covProc.toLocaleString()} of ${totProc.toLocaleString()} procedures (${(covProc/totProc*100).toFixed(1)}%) have payer coverage; ${uncovProc.toLocaleString()} are self-pay.`,'var(--tel)');
+}
+
+// ── BOOT ────────────────────────────────────────────────────────────────────
+updateFilterBadge();
+initExec();
+INIT['exec'] = true;
+
+</script>
+</body>
+</html>
