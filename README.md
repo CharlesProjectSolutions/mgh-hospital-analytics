@@ -25,7 +25,7 @@ This project delivers a four‑page dashboard system:
 
 ## 1. Project Overview
 
-This project was completed as part of the **MGH Analytics Hospital Challenge**, where I acted as a **Healthcare BI Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
+This project was completed as part of the **MGH Analytics Hospital Challenge**, where I acted as the **Healthcare BI Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
 The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a fully interactive, cross-filtered Tableau dashboard.
 
@@ -37,7 +37,7 @@ The deliverables were designed to serve multiple stakeholders: clinical operatio
 
 > **Design and build a hospital performance KPI dashboard that enables leadership to monitor clinical, insurance, financial, and  operational metrics, with the ability to drill down by year, visit type, payer, and coverage status.**
 
-Specifically, the project aimed to:
+Specifically, this project aimed to:
 
 - **Provide** leadership with real‑time visibility into key hospital performance metrics.
 - **Identify** trends in admissions, readmissions, and patient flow.
@@ -197,7 +197,7 @@ The current dashboard is a strong analytical foundation but the following enhanc
 
 ## 📄 License
 
-This project uses **synthetic data** provided by [Maven Analytics](https://www.mavenanalytics.io/). All analysis, code, and dashboards are original work and are shared for portfolio and learning purposes.
+All analysis, code, and dashboards are original work and are shared for portfolio and learning purposes.
 
 ---
 
