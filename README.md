@@ -77,8 +77,9 @@ The SQL data ingestion queries utilized to create tables + bulk load CSVs files 
 The SQL queries utilized to build data Model Views feeding Tableau dashboards can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_model_views)
 
 Prior to beginning this analysis, a variety of checks were conducted for quality control and familiarization with the datasets. Source CSVs files were reviewed for structure, column types, completeness, and 
-identified the need for a star schema to support multi-dimensional cross-filtering. Designed dimensional tables: dim_patients, dim_payers, dim_encounter_class, dim_date.
-Designed fact tables: fact_encounters, fact_procedures, and then mapped derived fields required for KPIs such as: is_readmission flag (30-day window), los_days, age_group, coverage_rate.
+identified the need for a star schema to support multi-dimensional cross-filtering. 
+- Designed dimensional tables: dim_patients, dim_payers, dim_encounter_class, dim_date.
+- Designed fact tables: fact_encounters, fact_procedures, and then mapped derived fields required for KPIs such as: is_readmission flag (30-day window), los_days, age_group, coverage_rate.
 
 <img width="33000" height="2500" alt="converted_page_1" src="https://github.com/user-attachments/assets/db941141-c479-4587-948d-01e7cc7581d9" />
 
