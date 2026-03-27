@@ -24,7 +24,7 @@ This project delivers a four‑page dashboard system:
 
 ## 1. Project Overview
 
-This project was completed as part of the **MGH Analytics Hospital Challenge**, where I acted as the **Healthcare BI Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
+This project was completed as part of the **MGH Analytics Hospital Project**, where I acted as the **Healthcare BI Data Analyst** tasked with building a comprehensive performance analytics solution for Massachusetts General Hospital (MGH). The dataset is synthetic and covers **27,891 patient encounters** across **974 unique patients** from January 2011 through February 2022.
 
 The challenge required me to move through the full analytics lifecycle; from raw CSV ingestion and dimensional modelling through SQL-driven KPI calculation, Python-based statistical analysis, HTML wireframe/prototype dashboard** built with Chart.js , and finally a fully interactive, cross-filtered Tableau dashboard.
 
