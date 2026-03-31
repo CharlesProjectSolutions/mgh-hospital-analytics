@@ -14,7 +14,7 @@ This project delivers a four‑page dashboard system:
 
 1. [Project Overview](#1-project-overview)
 2. [Project Objective](#2-project-objective)
-3. [Business Questions & Core KPIs](#3-business-questions--core-kpis)
+3. [Business Questions & Core KPI Definitions](#3-business-questions--core-kpi-Definitions)
 4. [Data Structure](#4-data-structure)
 5. [Dashboard Suite](#5-dashboard-suite)
 6. [Insights Summary](#8-insights-summary)
@@ -48,7 +48,7 @@ Specifically, this project aimed to:
 
 ---
 
-## 3. Business Questions & Core KPIs
+## 3. Business Questions & Core KPI Definitions
 
 The executive team wants clarity on the followings questions:
 
@@ -66,6 +66,49 @@ The executive team wants clarity on the followings questions:
 * How many **procedures** are covered by insurance?
 
 Targeted SQL queries regarding the various business questions can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/2f3398b68dee9dfa785e6be1036471e9ceaf205d/kpi_queries.sql)
+
+# KPI Definitions – MGH Hospital Analytics Project
+
+## 1. Total Admissions
+**Definition:** Count of all unique patient admissions within the selected period.  
+**Purpose:** Measures patient volume and hospital demand.
+
+## 2. Total Readmissions
+**Definition:** Number of patients readmitted within 30 days of discharge.  
+**Purpose:** Indicator of care quality and operational efficiency.
+
+## 3. Average Length of Stay (ALOS)
+**Definition:** Total inpatient days ÷ total discharges.  
+**Purpose:** Measures throughput efficiency and resource utilization.
+
+## 4. Median Length of Stay
+**Definition:** Median number of days patients spend in the hospital.  
+**Purpose:** Reduces skew from outliers.
+
+## 5. Average Cost per Visit
+**Definition:** Total cost of all visits ÷ number of visits.  
+**Purpose:** Tracks financial efficiency and cost trends.
+
+## 6. Total Cost (YTD)
+**Definition:** Sum of all visit‑level costs in the selected period.  
+**Purpose:** High‑level financial performance indicator.
+
+## 7. Procedures Covered by Insurance
+**Definition:** Count of procedures fully or partially covered by insurance.  
+**Purpose:** Measures payer coverage and financial risk exposure.
+
+## 8. Insurance Coverage Rate
+**Definition:** (Covered procedures ÷ total procedures) × 100  
+**Purpose:** Indicates reliance on insured vs uninsured care.
+
+## 9. Payer Mix
+**Definition:** Distribution of patients by insurance type (Medicare, Medicaid, Private, Self‑Pay).  
+**Purpose:** Helps forecast revenue and risk.
+
+## 10. Readmission Rate
+**Definition:** Readmissions ÷ total discharges.  
+**Purpose:** Quality of care indicator.
+
 
 ---
 
