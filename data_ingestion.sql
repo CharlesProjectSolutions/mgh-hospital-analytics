@@ -126,8 +126,7 @@ GO
 /* ============================================================
    FACT: fact_procedures
    One row per procedure performed.
-   Grain: one procedure session (recurring daily procedures each
-          get their own row, distinguished by procedure_start).
+   Grain: one procedure session (recurring daily procedures each get their own row, distinguished by procedure_start)
    ============================================================ */
 DROP TABLE IF EXISTS dbo.fact_procedures;
 GO
@@ -146,25 +145,6 @@ CREATE TABLE dbo.fact_procedures (
     reason_description         NVARCHAR(300)   NOT NULL,
     patient_age_at_procedure   INT             NULL
 );
-GO
-
-/* ============================================================
-   INDEXES  (add after bulk load for faster inserts)
-   ============================================================ */
-CREATE NONCLUSTERED INDEX IX_fact_encounters_patient
-    ON dbo.fact_encounters (patient_id) INCLUDE (total_claim_cost, encounter_year);
-GO
-CREATE NONCLUSTERED INDEX IX_fact_encounters_payer
-    ON dbo.fact_encounters (payer_id)   INCLUDE (total_claim_cost, payer_coverage);
-GO
-CREATE NONCLUSTERED INDEX IX_fact_encounters_date
-    ON dbo.fact_encounters (date_key)   INCLUDE (encounter_class_id, total_claim_cost);
-GO
-CREATE NONCLUSTERED INDEX IX_fact_procedures_encounter
-    ON dbo.fact_procedures (encounter_id);
-GO
-CREATE NONCLUSTERED INDEX IX_fact_procedures_patient
-    ON dbo.fact_procedures (patient_id) INCLUDE (base_cost);
 GO
 
 /* ============================================================
@@ -199,6 +179,27 @@ BULK INSERT dbo.fact_procedures
 FROM 'C:\Users\Charles\OneDrive\Desktop\Hospital Data\output\factprocedures.csv'
 WITH (FORMAT='CSV');
 
+
+/* ============================================================
+   INDEXES  (add after bulk load for faster inserts)
+   ============================================================ */
+CREATE NONCLUSTERED INDEX IX_fact_encounters_patient
+    ON dbo.fact_encounters (patient_id) INCLUDE (total_claim_cost, encounter_year);
+GO
+CREATE NONCLUSTERED INDEX IX_fact_encounters_payer
+    ON dbo.fact_encounters (payer_id)   INCLUDE (total_claim_cost, payer_coverage);
+GO
+CREATE NONCLUSTERED INDEX IX_fact_encounters_date
+    ON dbo.fact_encounters (date_key)   INCLUDE (encounter_class_id, total_claim_cost);
+GO
+CREATE NONCLUSTERED INDEX IX_fact_procedures_encounter
+    ON dbo.fact_procedures (encounter_id);
+GO
+CREATE NONCLUSTERED INDEX IX_fact_procedures_patient
+    ON dbo.fact_procedures (patient_id) INCLUDE (base_cost);
+GO
+   
+
 /* ============================================================
    QUICK SANITY TABLES QUERY CHECKS
    ============================================================ */
@@ -215,8 +216,4 @@ SELECT 'fact_encounters', COUNT(*) FROM dbo.fact_encounters
 UNION ALL
 SELECT 'fact_procedures', COUNT(*) FROM dbo.fact_procedures;
 GO
-
-
-
-SELECT * FROM dbo.fact_encounters
 
