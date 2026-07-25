@@ -2,11 +2,19 @@
 
 > **Massachusetts General Hospital (MGH)** : required a unified analytics dashboard suite to monitor operational efficiency, financial performance, and insurance coverage trends. The goal is to provide executives with a clear, actionable view of hospital performance using synthetic patient data from 2011–2022.
 
-This project delivers a four‑page dashboard system:
-1. Executive Summary
-2. Operations
-3. Finance
+This project delivers a four‑page [interactive.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> dashboard system with the Tableau implementation still in progress and will be published upon completion:
+1. Executive Summary,
+2. Operations,
+3. Finance,
 4. Insurance
+
+## From the analysis, several patterns emerged:
+* Readmissions: Increased from 48.8% to 68.4% after 2013, suggesting systemic discharge quality issues.
+* LOS: Inpatient stays averaged 1.54 days vs 0.06 for emergency — a 25× difference, validating separate benchmarking.
+* Coverage: Insurance coverage declined from 47.4% to 23%, leaving patients with a 69% out‑of‑pocket burden.
+* Payer Mix: Medicare accounted for 40.8% of encounters, making government payer dynamics central to revenue strategy.
+* Uninsured Exposure: 8,807 uninsured encounters represented $32M+ in self‑pay costs.
+* Cost Trends: Cost per visit peaked at $4,301 in 2012 and fluctuated due to case mix.
 
 ---
 
@@ -98,7 +106,7 @@ identified the need for a star schema to support multi-dimensional cross-filteri
 
 ## 5. Dashboard Suite
 
-Insights and recommendations are provided to the following stakeholders, and a downloadable interactive wireframe and prototype are included [here.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> to preview the dashboard experience. The Tableau implementation is in progress and will be published upon completion.
+Insights and recommendations are provided to the following stakeholders
 
 | Role | Responsibilities | Needs |
 |------|------------------|-------|
