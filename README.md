@@ -65,13 +65,13 @@ The executive team wants clarity on the followings questions:
 ### 4. **Insurance Coverage**
 * How many **procedures** are covered by insurance?
 
-Targeted SQL queries regarding the various business questions can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/2f3398b68dee9dfa785e6be1036471e9ceaf205d/kpi_queries.sql)
+Targeted SQL queries utilized to answer various business questions can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/2f3398b68dee9dfa785e6be1036471e9ceaf205d/kpi_queries.sql)
 
 ---
 
 ## 4. Data Structure
 
-The SQL data ingestion queries utilized to create tables + bulk load CSVs files and perform quality checks can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_ingestion.sql)
+Created SQL data ingestion queries utilized to create tables + bulk load CSVs files and perform quality checks can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_ingestion.sql)
 
 The SQL queries utilized to build data Model Views feeding Tableau dashboards can be found [here](https://github.com/CharlesProjectSolutions/mgh-hospital-analytics/blob/5442131de37416e66ae74a4265f32ab026218eac/data_model_views)
 
