@@ -4,7 +4,7 @@
 
 This project delivers a four‑page (Executive Summary, Operations, Finance, Insurance) [interactive.html](https://github.com/user-attachments/files/26173509/mgh_WireframesDdashboard.html)<!DOCTYPE html> dashboard system with the Tableau implementation still in progress and will be published upon completion:
 
-# From the analysis, several patterns emerged:
+## From the analysis, several patterns emerged:
 * Readmissions: Increased from 48.8% to 68.4% after 2013, suggesting systemic discharge quality issues.
 * LOS: Inpatient stays averaged 1.54 days vs 0.06 for emergency, a 25× difference, validating separate benchmarking.
 * Coverage: Insurance coverage declined from 47.4% to 23%, leaving patients with a 69% out‑of‑pocket burden.
