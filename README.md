@@ -8,7 +8,7 @@ This project delivers a four‑page [interactive.html](https://github.com/user-a
 3. Finance,
 4. Insurance
 
-## From the analysis, several patterns emerged:
+# From the analysis, several patterns emerged:
 * Readmissions: Increased from 48.8% to 68.4% after 2013, suggesting systemic discharge quality issues.
 * LOS: Inpatient stays averaged 1.54 days vs 0.06 for emergency — a 25× difference, validating separate benchmarking.
 * Coverage: Insurance coverage declined from 47.4% to 23%, leaving patients with a 69% out‑of‑pocket burden.
